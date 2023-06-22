@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:new_contact_bloc/View/Screens/add_new_contact_screen.dart';
-import 'package:new_contact_bloc/View/Screens/contact_detail_screen.dart';
-
 import '../../Logic/bloc/contact_bloc.dart';
 import '../Widget/contact_list_tile.dart';
 
