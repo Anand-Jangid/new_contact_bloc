@@ -52,5 +52,14 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
   }
 
   FutureOr<void> deleteButtonTapped(
-      DeleteButtonTapped event, Emitter<ContactDetailState> emit) {}
+      DeleteButtonTapped event, Emitter<ContactDetailState> emit) async{
+        emit(ContactProcessingState());
+        try {
+          var result = await contactsDatabase.delete(event.id);
+          //TODO check if the data is deleted successfully
+          emit(MoveToBackPage());
+        } catch (e) {
+          emit(ContactErrorState(error: e.toString()));
+        }
+  }
 }

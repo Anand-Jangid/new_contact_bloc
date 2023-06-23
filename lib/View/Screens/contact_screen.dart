@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:new_contact_bloc/View/Screens/add_new_contact_screen.dart';
+import 'package:new_contact_bloc/View/Widget/contact_list.dart';
 import '../../Logic/bloc/contact/contact_bloc.dart';
-import '../Widget/contact_list_tile.dart';
 
 class ContactScreen extends StatefulWidget {
   const ContactScreen({super.key});
@@ -43,24 +43,16 @@ class _ContactScreenState extends State<ContactScreen> {
             switch (state.runtimeType) {
               case ContactLoadSuccessState:
                 final allContactsState = state as ContactLoadSuccessState;
-                return ListView.builder(
-                    itemCount: allContactsState.contacts.length,
-                    itemBuilder: (context, index) {
-                      if (allContactsState.contacts.isEmpty) {
-                        return const Center(
-                          child: Text('No Data'),
-                        );
-                      }
-                      return InkWell(
-                        onTap: () {
-                          BlocProvider.of<ContactBloc>(context).add(
-                              ContactListTileTapped(
-                                  contact: allContactsState.contacts[index]));
-                        },
-                        child: ContactListTile(
-                            contact: allContactsState.contacts[index]),
-                      );
-                    });
+                if (allContactsState.contacts.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No Data',
+                      style: Theme.of(context).textTheme.headlineLarge,
+                    ),
+                  );
+                } else {
+                  return ContactList(contacts: allContactsState.contacts);
+                }
               case ContactErrorState:
                 final contactErrorState = state as ContactErrorState;
                 return Center(child: Text(contactErrorState.error));
@@ -82,13 +74,16 @@ class _ContactScreenState extends State<ContactScreen> {
                 icon: Icon(Icons.collections), label: 'All'),
             BottomNavigationBarItem(
                 icon: Icon(Icons.favorite), label: 'Favourite'),
+            BottomNavigationBarItem(icon: Icon(Icons.image), label: 'Images'),
           ],
           currentIndex: 0,
           onTap: (int index) {
             if (index == 0) {
-              BlocProvider.of<ContactBloc>(context).add(AllButtonTappedEvent());
+              // BlocProvider.of<ContactBloc>(context).add(AllButtonTappedEvent());
+              context.read<ContactBloc>().add(AllButtonTappedEvent());
             } else if (index == 1) {
-              BlocProvider.of<ContactBloc>(context).add(FavButtonTappedEvent());
+              // BlocProvider.of<ContactBloc>(context).add(FavButtonTappedEvent());
+              context.read<ContactBloc>().add(FavButtonTappedEvent());
             }
           },
           backgroundColor: Colors.blueAccent[100],
