@@ -9,8 +9,9 @@ class AllButtonTappedEvent extends ContactEvent {}
 
 class FavButtonTappedEvent extends ContactEvent {}
 
-class AddFloatingButtonTappedEvent extends ContactEvent {}
+class ImageButtonTappedEvent extends ContactEvent{}
 
+class AddFloatingButtonTappedEvent extends ContactEvent {}
 
 //! Tapping on contact list tile
 class ContactListTileTapped extends ContactEvent {

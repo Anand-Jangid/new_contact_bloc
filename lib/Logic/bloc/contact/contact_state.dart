@@ -20,17 +20,17 @@ class ContactErrorState extends ContactState {
 }
 
 class ContactLoadSuccessState extends ContactState {
+  final int bottomNavigatorLocation;
   final List<Contact> contacts;
   ContactLoadSuccessState({
     required this.contacts,
+    required this.bottomNavigatorLocation,
   });
 }
 
 //! add contact states
 
 class ContactAddFloatButtonTappedState extends ContactActionState {}
-
-
 
 //! Contact detail tapped state
 class ContactDetailTappedState extends ContactActionState {
@@ -39,3 +39,6 @@ class ContactDetailTappedState extends ContactActionState {
     required this.contact,
   });
 }
+
+//! image states
+class ImageTappedState extends ContactState{}

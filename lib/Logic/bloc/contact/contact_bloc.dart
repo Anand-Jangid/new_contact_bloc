@@ -23,6 +23,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
 
     on<ContactListTileTapped>(contactListTileTapped);
 
+    on<ImageButtonTappedEvent>(imageButtonTappedEvent);
   }
 
   //! Load all contacts
@@ -31,7 +32,8 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     emit(ContactsLoadingState());
     try {
       List<Contact> allContacts = await contactsDatabase.readAllContacts();
-      emit(ContactLoadSuccessState(contacts: allContacts));
+      emit(ContactLoadSuccessState(
+          contacts: allContacts, bottomNavigatorLocation: 0));
     } catch (e) {
       emit(ContactErrorState(error: e.toString()));
     }
@@ -48,7 +50,8 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
             (contact) => contact.isFavourite == 1,
           )
           .toList();
-      emit(ContactLoadSuccessState(contacts: favContacts));
+      emit(ContactLoadSuccessState(
+          contacts: favContacts, bottomNavigatorLocation: 1));
     } catch (e) {
       emit(ContactErrorState(error: e.toString()));
     }
@@ -60,11 +63,14 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     emit(ContactAddFloatButtonTappedState());
   }
 
-
   //! tap on the contact list tile
   FutureOr<void> contactListTileTapped(
       ContactListTileTapped event, Emitter<ContactState> emit) {
     emit(ContactDetailTappedState(contact: event.contact));
   }
 
+  FutureOr<void> imageButtonTappedEvent(
+      ImageButtonTappedEvent event, Emitter<ContactState> emit) {
+    emit(ImageTappedState());
+  }
 }
