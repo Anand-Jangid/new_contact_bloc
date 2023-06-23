@@ -1,13 +1,9 @@
-// import 'package:contacts_bloc/Data/Model/contact_model.dart';
-// import 'package:contacts_bloc/UI/Screens/contact_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:new_contact_bloc/Data/Model/contact_model.dart';
 import 'package:new_contact_bloc/View/Screens/contact_screen.dart';
-
-import '../../Logic/bloc/contact_bloc.dart';
-
-// import '../../Logic/bloc/contact_bloc.dart';
+import '../../Logic/bloc/contact/contact_bloc.dart';
+import '../../Logic/bloc/contact_detail/contact_detail_bloc.dart';
 
 class AddNewContactScreen extends StatefulWidget {
   final Contact? contact;
@@ -37,24 +33,23 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Create New Contact"),
+        title: (widget.contact == null)
+            ? const Text("Create New Contact")
+            : const Text("Edit Contact"),
         centerTitle: true,
         automaticallyImplyLeading: false,
       ),
-      body: BlocConsumer<ContactBloc, ContactState>(
-        listenWhen: (previous, current) => current is ContactActionState,
-        buildWhen: (previous, current) => current is! ContactActionState,
+      body: BlocConsumer<ContactDetailBloc, ContactDetailState>(
+        listenWhen: (previous, current) => current is ContactDetailActionState,
+        buildWhen: (previous, current) => current is! ContactDetailActionState,
         listener: (context, state) {
-          if (state is ContactCancelButtonTappedState) {
+          if (state is MoveToBackPage) {
             Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) => const ContactScreen()));
           }
-          // else if (state is CancelAddingContactState) {
-          //   Navigator.of(context).pop();
-          // }
         },
         builder: (context, state) {
-          if (state is ContactAddingState) {
+          if (state is ContactProcessingState) {
             return const Center(child: CircularProgressIndicator());
           } else {
             return Padding(
@@ -122,8 +117,9 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                               // Cancel button
                               ElevatedButton(
                                   onPressed: () {
-                                    BlocProvider.of<ContactBloc>(context)
-                                        .add(CancelButtonTappedEvent());
+                                    context
+                                        .read<ContactDetailBloc>()
+                                        .add(CancelButtonTapped());
                                   },
                                   child: const Text("Cancel")),
                               const SizedBox(
@@ -132,8 +128,8 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                               // Add button
                               ElevatedButton(
                                   onPressed: () {
-                                    BlocProvider.of<ContactBloc>(context).add(
-                                        AddButtonTappedEvent(
+                                    context.read<ContactDetailBloc>().add(
+                                        AddButtonTapped(
                                             contact: Contact(
                                                 name: _nameController.text,
                                                 email: _emailController.text,
@@ -151,8 +147,9 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                               // Cancel button
                               ElevatedButton(
                                   onPressed: () {
-                                    BlocProvider.of<ContactBloc>(context)
-                                        .add(CancelButtonTappedEvent());
+                                    context
+                                        .read<ContactDetailBloc>()
+                                        .add(CancelButtonTapped());
                                   },
                                   child: const Text("Cancel")),
                               const SizedBox(
@@ -161,7 +158,16 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                               // Update button
                               ElevatedButton(
                                   onPressed: () {
-                                    BlocProvider.of<ContactBloc>(context).add(UpdateButtonTappedEvent(contact: Contact(id: widget.contact!.id, name: _nameController.text, email: _emailController.text, phoneNumber: _numberController.text,isFavourite: isFavourite, createdTime: DateTime.now())));
+                                    context.read<ContactDetailBloc>().add(
+                                        UpdateButtonTapped(
+                                            contact: Contact(
+                                                id: widget.contact!.id,
+                                                name: _nameController.text,
+                                                email: _emailController.text,
+                                                phoneNumber:
+                                                    _numberController.text,
+                                                isFavourite: isFavourite,
+                                                createdTime: DateTime.now())));
                                   },
                                   child: const Text("Update")),
                               const SizedBox(
@@ -170,7 +176,9 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                               // Delete button
                               ElevatedButton(
                                   onPressed: () {
-                                    BlocProvider.of<ContactBloc>(context).add(DeleteButtonTappedEvent(id: widget.contact!.id!));
+                                    context.read<ContactDetailBloc>().add(
+                                        DeleteButtonTapped(
+                                            id: widget.contact!.id!));
                                   },
                                   child: const Text("Delete")),
                             ],

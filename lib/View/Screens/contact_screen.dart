@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:new_contact_bloc/View/Screens/add_new_contact_screen.dart';
-import '../../Logic/bloc/contact_bloc.dart';
+import '../../Logic/bloc/contact/contact_bloc.dart';
 import '../Widget/contact_list_tile.dart';
-
 
 class ContactScreen extends StatefulWidget {
   const ContactScreen({super.key});
@@ -32,12 +31,12 @@ class _ContactScreenState extends State<ContactScreen> {
           listener: (context, state) {
             if (state is ContactAddFloatButtonTappedState) {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => AddNewContactScreen()));
-            } 
-            else if (state is ContactDetailTappedState) {
+                  builder: (context) => const AddNewContactScreen()));
+            } else if (state is ContactDetailTappedState) {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => AddNewContactScreen(contact: state.contact,)
-              ));
+                  builder: (context) => AddNewContactScreen(
+                        contact: state.contact,
+                      )));
             }
           },
           builder: (context, state) {
@@ -47,10 +46,16 @@ class _ContactScreenState extends State<ContactScreen> {
                 return ListView.builder(
                     itemCount: allContactsState.contacts.length,
                     itemBuilder: (context, index) {
+                      if (allContactsState.contacts.isEmpty) {
+                        return const Center(
+                          child: Text('No Data'),
+                        );
+                      }
                       return InkWell(
                         onTap: () {
-                          BlocProvider.of<ContactBloc>(context)
-                              .add(ContactListTileTapped(contact: allContactsState.contacts[index]));
+                          BlocProvider.of<ContactBloc>(context).add(
+                              ContactListTileTapped(
+                                  contact: allContactsState.contacts[index]));
                         },
                         child: ContactListTile(
                             contact: allContactsState.contacts[index]),
@@ -60,7 +65,7 @@ class _ContactScreenState extends State<ContactScreen> {
                 final contactErrorState = state as ContactErrorState;
                 return Center(child: Text(contactErrorState.error));
               default:
-                return const Center(child: Text("NO DATA"));
+                return const Center(child: CircularProgressIndicator());
             }
           },
         ),

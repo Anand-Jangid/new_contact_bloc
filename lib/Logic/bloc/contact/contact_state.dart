@@ -10,9 +10,7 @@ class ContactInitial extends ContactState {}
 
 //! contacts load states
 
-class ContactsLoadingState extends ContactState {
-  //// return CitcularProgressIndicator();
-}
+class ContactsLoadingState extends ContactState {}
 
 class ContactErrorState extends ContactState {
   final String error;
@@ -32,9 +30,7 @@ class ContactLoadSuccessState extends ContactState {
 
 class ContactAddFloatButtonTappedState extends ContactActionState {}
 
-class ContactCancelButtonTappedState extends ContactActionState {}
 
-class ContactAddingState extends ContactState {}
 
 //! Contact detail tapped state
 class ContactDetailTappedState extends ContactActionState {
