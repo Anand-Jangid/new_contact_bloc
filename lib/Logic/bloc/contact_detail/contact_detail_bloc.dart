@@ -32,6 +32,7 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
       AddButtonTapped event, Emitter<ContactDetailState> emit) async {
     emit(ContactProcessingState());
     try {
+      print(event.contact.updatedTime);
       var contact = await contactsDatabase.create(event.contact);
       //TODO: check the contact is created successfully
       emit(MoveToBackPage());
@@ -52,14 +53,14 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
   }
 
   FutureOr<void> deleteButtonTapped(
-      DeleteButtonTapped event, Emitter<ContactDetailState> emit) async{
-        emit(ContactProcessingState());
-        try {
-          var result = await contactsDatabase.delete(event.id);
-          //TODO check if the data is deleted successfully
-          emit(MoveToBackPage());
-        } catch (e) {
-          emit(ContactErrorState(error: e.toString()));
-        }
+      DeleteButtonTapped event, Emitter<ContactDetailState> emit) async {
+    emit(ContactProcessingState());
+    try {
+      var result = await contactsDatabase.delete(event.id);
+      //TODO check if the data is deleted successfully
+      emit(MoveToBackPage());
+    } catch (e) {
+      emit(ContactErrorState(error: e.toString()));
+    }
   }
 }

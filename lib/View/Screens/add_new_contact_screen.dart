@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:new_contact_bloc/Data/Model/contact_model.dart';
 import 'package:new_contact_bloc/View/Screens/contact_screen.dart';
+import 'package:new_contact_bloc/View/Screens/contact_update_log.dart';
 import '../../Logic/bloc/contact/contact_bloc.dart';
 import '../../Logic/bloc/contact_detail/contact_detail_bloc.dart';
 
@@ -136,51 +137,76 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                                 phoneNumber:
                                                     _numberController.text,
                                                 isFavourite: isFavourite,
-                                                createdTime: DateTime.now())));
+                                                createdTime: DateTime.now(),
+                                                updatedTime: DateTime.now())));
                                   },
                                   child: const Text("ADD")),
                             ],
                           )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        : Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              // Cancel button
-                              ElevatedButton(
-                                  onPressed: () {
-                                    context
-                                        .read<ContactDetailBloc>()
-                                        .add(CancelButtonTapped());
-                                  },
-                                  child: const Text("Cancel")),
+                              Row(
+                                children: [
+                                  // Cancel button
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        context
+                                            .read<ContactDetailBloc>()
+                                            .add(CancelButtonTapped());
+                                      },
+                                      child: const Text("Cancel")),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  // Update button
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        context.read<ContactDetailBloc>().add(
+                                            UpdateButtonTapped(
+                                                contact: Contact(
+                                                    id: widget.contact!.id,
+                                                    name: _nameController.text,
+                                                    email:
+                                                        _emailController.text,
+                                                    phoneNumber:
+                                                        _numberController.text,
+                                                    isFavourite: isFavourite,
+                                                    createdTime: widget.contact
+                                                            ?.createdTime ??
+                                                        DateTime.now(),
+                                                    updatedTime:
+                                                        DateTime.now())));
+                                      },
+                                      child: const Text("Update")),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  // Delete button
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        context.read<ContactDetailBloc>().add(
+                                            DeleteButtonTapped(
+                                                id: widget.contact!.id!));
+                                      },
+                                      child: const Text("Delete")),
+                                ],
+                              ),
                               const SizedBox(
                                 width: 20,
                               ),
-                              // Update button
                               ElevatedButton(
                                   onPressed: () {
-                                    context.read<ContactDetailBloc>().add(
-                                        UpdateButtonTapped(
-                                            contact: Contact(
-                                                id: widget.contact!.id,
-                                                name: _nameController.text,
-                                                email: _emailController.text,
-                                                phoneNumber:
-                                                    _numberController.text,
-                                                isFavourite: isFavourite,
-                                                createdTime: DateTime.now())));
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ContactUpdateLog(
+                                                    id: widget.contact!.id!)));
                                   },
-                                  child: const Text("Update")),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              // Delete button
-                              ElevatedButton(
-                                  onPressed: () {
-                                    context.read<ContactDetailBloc>().add(
-                                        DeleteButtonTapped(
-                                            id: widget.contact!.id!));
-                                  },
-                                  child: const Text("Delete")),
+                                  child: const Text("Update Log")),
+                              Text((widget.contact?.updatedTime ??
+                                      DateTime.now())
+                                  .toIso8601String()),
                             ],
                           )
                   ],

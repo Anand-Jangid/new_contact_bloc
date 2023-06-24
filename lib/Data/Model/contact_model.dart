@@ -7,6 +7,7 @@ class ContactFields {
   static final String phoneNumber = 'phoneNumber';
   static final String isFavourite = 'isFavourite';
   static final String time = 'time';
+  static final String updatedTime = 'updatedTime';
 
   static final List<String> values = [
     id,
@@ -14,7 +15,8 @@ class ContactFields {
     email,
     phoneNumber,
     isFavourite,
-    time
+    time,
+    updatedTime,
   ];
 }
 
@@ -25,6 +27,7 @@ class Contact {
   final String phoneNumber;
   final int isFavourite;
   final DateTime createdTime;
+  final DateTime updatedTime;
 
   Contact({
     this.id,
@@ -33,16 +36,18 @@ class Contact {
     required this.phoneNumber,
     required this.isFavourite,
     required this.createdTime,
+    required this.updatedTime
   });
 
-    Contact copy({
-      int? id,
-      String? name,
-      String? email,
-      String? phoneNumber,
-      int? isFavourite,
-      DateTime? createdTime,
-    }) =>
+  Contact copy({
+    int? id,
+    String? name,
+    String? email,
+    String? phoneNumber,
+    int? isFavourite,
+    DateTime? createdTime,
+    DateTime? updatedTime
+  }) =>
       Contact(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -50,6 +55,7 @@ class Contact {
         phoneNumber: phoneNumber ?? this.phoneNumber,
         isFavourite: isFavourite ?? this.isFavourite,
         createdTime: createdTime ?? this.createdTime,
+        updatedTime: updatedTime ?? this.updatedTime
       );
 
   static Contact fromJson(Map<String, dynamic> json) => Contact(
@@ -58,14 +64,17 @@ class Contact {
       email: json[ContactFields.email] as String,
       phoneNumber: json[ContactFields.phoneNumber] as String,
       isFavourite: json[ContactFields.isFavourite] as int,
-      createdTime: DateTime.parse(json[ContactFields.time] as String));
+      createdTime: DateTime.parse(json[ContactFields.time] as String),
+      updatedTime: DateTime.parse(json[ContactFields.updatedTime] as String)
+    );
 
   Map<String, dynamic> toJson() => {
-    ContactFields.id : id,
-    ContactFields.name: name,
-    ContactFields.email : email,
-    ContactFields.phoneNumber : phoneNumber,
-    ContactFields.isFavourite : isFavourite,
-    ContactFields.time : createdTime.toIso8601String(),
-  };
+        ContactFields.id: id,
+        ContactFields.name: name,
+        ContactFields.email: email,
+        ContactFields.phoneNumber: phoneNumber,
+        ContactFields.isFavourite: isFavourite,
+        ContactFields.time: createdTime.toIso8601String(),
+        ContactFields.updatedTime : updatedTime.toIso8601String(),
+      };
 }
