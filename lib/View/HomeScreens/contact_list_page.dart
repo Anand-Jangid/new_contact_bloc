@@ -20,8 +20,8 @@ class _ContactListPageState extends State<ContactListPage> {
     return Scaffold(
         appBar: AppBar(
           title: (widget.bottmNavLocation == 0)
-              ? Text("All Contacts")
-              : Text("Favourite Contacts"),
+              ? const Text("All Contacts")
+              : const Text("Favourite Contacts"),
           centerTitle: true,
         ),
         body: ContactList(contacts: widget.contacts ?? []),

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:new_contact_bloc/View/HomeScreens/contact_list_page.dart';
 import 'package:new_contact_bloc/View/Screens/add_new_contact_screen.dart';
 import 'package:new_contact_bloc/View/HomeScreens/image_grid_view.dart';
-import 'package:new_contact_bloc/View/Widget/contact_list.dart';
 import '../../Logic/bloc/contact/contact_bloc.dart';
 
 class ContactScreen extends StatefulWidget {

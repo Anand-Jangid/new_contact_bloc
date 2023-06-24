@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:new_contact_bloc/Data/Model/contact_model.dart';
 import 'package:new_contact_bloc/View/Screens/contact_screen.dart';
 import 'package:new_contact_bloc/View/Screens/contact_update_log.dart';
-import '../../Logic/bloc/contact/contact_bloc.dart';
 import '../../Logic/bloc/contact_detail/contact_detail_bloc.dart';
 
 class AddNewContactScreen extends StatefulWidget {
