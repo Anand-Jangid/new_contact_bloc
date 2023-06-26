@@ -17,32 +17,30 @@ class ContactModelHiveAdapter extends TypeAdapter<ContactModelHive> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ContactModelHive(
-      name: fields[1] as String,
-      email: fields[2] as String,
-      phoneNumber: fields[3] as String,
-      isFavourite: fields[4] as int,
-      createdTime: fields[5] as DateTime,
-      updatedTime: fields[6] as DateTime,
-    )..id = fields[0] as int?;
+      name: fields[0] as String,
+      email: fields[1] as String,
+      phoneNumber: fields[2] as String,
+      isFavourite: fields[3] as int,
+      createdTime: fields[4] as DateTime,
+      updatedTime: fields[5] as DateTime,
+    );
   }
 
   @override
   void write(BinaryWriter writer, ContactModelHive obj) {
     writer
-      ..writeByte(7)
-      ..writeByte(0)
-      ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.name)
-      ..writeByte(2)
-      ..write(obj.email)
-      ..writeByte(3)
-      ..write(obj.phoneNumber)
-      ..writeByte(4)
-      ..write(obj.isFavourite)
-      ..writeByte(5)
-      ..write(obj.createdTime)
       ..writeByte(6)
+      ..writeByte(0)
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.email)
+      ..writeByte(2)
+      ..write(obj.phoneNumber)
+      ..writeByte(3)
+      ..write(obj.isFavourite)
+      ..writeByte(4)
+      ..write(obj.createdTime)
+      ..writeByte(5)
       ..write(obj.updatedTime);
   }
 

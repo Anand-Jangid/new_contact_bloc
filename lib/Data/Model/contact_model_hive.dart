@@ -1,28 +1,29 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:hive/hive.dart';
+
+import 'contact_model.dart';
 
 part 'contact_model_hive.g.dart';
 
 @HiveType(typeId: 1)
-class ContactModelHive {
-  @HiveField(0)
-  int? id;
+class ContactModelHive extends HiveObject {
 
-  @HiveField(1)
+  @HiveField(0)
   final String name;
 
-  @HiveField(2)
+  @HiveField(1)
   final String email;
 
-  @HiveField(3)
+  @HiveField(2)
   final String phoneNumber;
 
-  @HiveField(4)
+  @HiveField(3)
   final int isFavourite;
 
-  @HiveField(5)
+  @HiveField(4)
   final DateTime createdTime;
 
-  @HiveField(6)
+  @HiveField(5)
   final DateTime updatedTime;
 
   ContactModelHive({

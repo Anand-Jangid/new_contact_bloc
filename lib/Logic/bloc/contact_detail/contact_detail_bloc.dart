@@ -46,6 +46,7 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
     emit(ContactProcessingState());
     try {
       var result = await contactsDatabase.update(event.contact);
+      print("moving to back screen");
       emit(MoveToBackPage());
     } catch (e) {
       emit(ContactErrorState(error: e.toString()));

@@ -11,8 +11,8 @@ class ContactsDatabase {
 
   ContactsDatabase._init();
 
-  Box<ContactModelHive> contactsBox =
-      Hive.box<ContactModelHive>("contactInHive");
+  Box<List<ContactModelHive>> contactsBox =
+      Hive.box<List<ContactModelHive>>("contactInHive");
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -54,14 +54,12 @@ class ContactsDatabase {
 
   // Future<Contact> readContact(int id) async {
   //   final db = await instance.database;
-
   //   final maps = await db.query(
   //     tableContacts,
   //     columns: ContactFields.values,
   //     where: '${ContactFields.id} = ?',
   //     whereArgs: [id],
   //   );
-
   //   if (maps.isNotEmpty) {
   //     return Contact.fromJson(maps.first);
   //   } else {
@@ -76,29 +74,74 @@ class ContactsDatabase {
     return result.map((json) => Contact.fromJson(json)).toList();
   }
 
-  ContactModelHive? getContactUpdateLog(int id) {
-    return contactsBox.get(id);
+  List<ContactModelHive> getContactUpdateLog(int id) {
+    var contacts = contactsBox.get(id);
+    if (contacts != null) {
+      return contacts;
+    }
+    // if (contacts!.contacts.isEmpty) {
+    //   return contacts.contacts;
+    // }
+    return [];
   }
 
   Future<int> update(Contact contact) async {
-    await contactsBox.put(
-        contact.id,
+    print("1");
+    if (contactsBox.containsKey(contact.id)) {
+      print("2");
+      var contacts = contactsBox.get(contact.id);
+      print("2.1");
+      if (contacts?.isEmpty ?? true) {
+        await contactsBox.put(contact.id, [
+          ContactModelHive(
+              name: contact.name,
+              email: contact.email,
+              phoneNumber: contact.phoneNumber,
+              isFavourite: contact.isFavourite,
+              createdTime: contact.createdTime,
+              updatedTime: contact.updatedTime)
+        ]);
+      }
+      else{
+        contacts!.insert(
+            0,
+            ContactModelHive(
+                name: contact.name,
+                email: contact.email,
+                phoneNumber: contact.phoneNumber,
+                isFavourite: contact.isFavourite,
+                createdTime: contact.createdTime,
+                updatedTime: contact.updatedTime));
+        await contactsBox.put(contact.id, contacts);
+      }
+    } else {
+      print("3");
+
+      await contactsBox.put(contact.id, [
         ContactModelHive(
             name: contact.name,
             email: contact.email,
             phoneNumber: contact.phoneNumber,
             isFavourite: contact.isFavourite,
             createdTime: contact.createdTime,
-            updatedTime: contact.updatedTime));
-    contactsBox.add(ContactModelHive(
-        name: contact.name,
-        email: contact.email,
-        phoneNumber: contact.phoneNumber,
-        isFavourite: contact.isFavourite,
-        createdTime: contact.createdTime,
-        updatedTime: contact.updatedTime));
+            updatedTime: contact.updatedTime)
+      ]);
+      // await contactsBox.put(
+      //     contact.id,
+      //     ContactModelHive(id: contact.id!, contacts: [
+      //       Contact(
+      //           name: contact.name,
+      //           email: contact.email,
+      //           phoneNumber: contact.phoneNumber,
+      //           isFavourite: contact.isFavourite,
+      //           createdTime: contact.createdTime,
+      //           updatedTime: contact.updatedTime)
+      //     ]));
+      print("3.1");
+    }
+    print("4");
     final db = await instance.database;
-
+    print("5");
     return db.update(
       tableContacts,
       contact.toJson(),

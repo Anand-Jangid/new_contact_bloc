@@ -51,6 +51,8 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
         builder: (context, state) {
           if (state is ContactProcessingState) {
             return const Center(child: CircularProgressIndicator());
+          } else if (state is ContactErrorState) {
+            return Center(child: Text(state.error));
           } else {
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -143,7 +145,7 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                             ],
                           )
                         : Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Row(
                                 children: [

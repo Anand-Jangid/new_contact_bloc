@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:new_contact_bloc/Data/DataProvider/contact_provider.dart';
 import 'package:new_contact_bloc/Logic/bloc/contact_detail/contact_detail_bloc.dart';
@@ -13,7 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(ContactModelHiveAdapter());
-  await Hive.openBox<ContactModelHive>("contactInHive");
+  await Hive.openBox<List<ContactModelHive>>("contactInHive");
   runApp(MyApp());
 }
 

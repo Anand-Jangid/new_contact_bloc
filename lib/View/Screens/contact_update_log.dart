@@ -33,10 +33,10 @@ class _ContactUpdateLogState extends State<ContactUpdateLog> {
             case ContactUpdateLogLoadedSuccessfully:
               final successState = state as ContactUpdateLogLoadedSuccessfully;
               return ListView.builder(
-                  itemCount: successState.contactUpdateLogs.length,
+                  itemCount: successState.contacts.length,
                   itemBuilder: (context, index) {
                     return ContactUpdateLoagTile(
-                      contactModelHive: successState.contactUpdateLogs[index]!,
+                      contact: successState.contacts[index],
                     );
                   });
             case ContactUpdateLogLoadError:
