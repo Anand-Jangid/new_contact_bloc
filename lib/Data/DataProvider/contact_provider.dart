@@ -50,6 +50,16 @@ class ContactsDatabase {
   Future<Contact> create(Contact contact) async {
     final db = await instance.database;
     final id = await db.insert(tableContacts, contact.toJson());
+    //now with this is i can store in hive also
+    await contactsBox.put(
+        id.toString(),
+        ContactModelHive(
+            name: [contact.name],
+            email: [contact.email],
+            phoneNumber: [contact.phoneNumber],
+            isFavourite: [contact.isFavourite],
+            createdTime: [contact.createdTime],
+            updatedTime: [contact.updatedTime]));
     return contact.copy(id: id);
   }
 
