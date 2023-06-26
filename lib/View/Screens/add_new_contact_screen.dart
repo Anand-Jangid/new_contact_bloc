@@ -46,6 +46,39 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
           if (state is MoveToBackPage) {
             Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) => const ContactScreen()));
+          } else if (state is ShowModelBottomSheetOfPhoto) {
+            showModalBottomSheet<void>(
+              context: context,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.0),
+                  topRight: Radius.circular(20.0),
+                ),
+              ),
+              builder: (BuildContext context) {
+                return FractionallySizedBox(
+                  heightFactor: 0.5,
+                  widthFactor: 0.5,
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Photo", style: Theme.of(context).textTheme.bodyLarge,),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text("Take Photo from Gallery", style: Theme.of(context).textTheme.bodyLarge,),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text("Take photo from camera", style: Theme.of(context).textTheme.bodyLarge,)
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
           }
         },
         builder: (context, state) {
@@ -61,11 +94,18 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const CircleAvatar(
-                      radius: 60,
-                      child: Icon(
-                        Icons.person,
-                        size: 110,
+                    InkWell(
+                      onTap: () {
+                        context
+                            .read<ContactDetailBloc>()
+                            .add(ImageIconTapped());
+                      },
+                      child: const CircleAvatar(
+                        radius: 60,
+                        child: Icon(
+                          Icons.person,
+                          size: 110,
+                        ),
                       ),
                     ),
                     const SizedBox(
@@ -205,9 +245,6 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                                     id: widget.contact!.id!)));
                                   },
                                   child: const Text("Update Log")),
-                              Text((widget.contact?.updatedTime ??
-                                      DateTime.now())
-                                  .toIso8601String()),
                             ],
                           )
                   ],

@@ -21,6 +21,8 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
     on<UpdateButtonTapped>(updateButtonTapped);
 
     on<DeleteButtonTapped>(deleteButtonTapped);
+
+    on<ImageIconTapped>(imageIconTapped);
   }
 
   FutureOr<void> cancelButtonTapped(
@@ -61,5 +63,10 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
     } catch (e) {
       emit(ContactErrorState(error: e.toString()));
     }
+  }
+
+  FutureOr<void> imageIconTapped(
+      ImageIconTapped event, Emitter<ContactDetailState> emit) {
+    emit(ShowModelBottomSheetOfPhoto());
   }
 }

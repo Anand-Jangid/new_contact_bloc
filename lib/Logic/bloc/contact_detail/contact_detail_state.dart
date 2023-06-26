@@ -20,3 +20,5 @@ class ContactErrorState extends ContactDetailState {
     required this.error
   });
 }
+
+class ShowModelBottomSheetOfPhoto extends ContactDetailActionState{}

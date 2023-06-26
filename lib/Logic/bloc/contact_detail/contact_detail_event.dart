@@ -26,3 +26,5 @@ class DeleteButtonTapped extends ContactDetailEvent {
     required this.id,
   });
 }
+
+class ImageIconTapped extends ContactDetailEvent{}
