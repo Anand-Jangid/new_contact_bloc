@@ -9,22 +9,22 @@ part 'contact_model_hive.g.dart';
 class ContactModelHive extends HiveObject {
 
   @HiveField(0)
-  final String name;
+  final List<String> name;
 
   @HiveField(1)
-  final String email;
+  final List<String> email;
 
   @HiveField(2)
-  final String phoneNumber;
+  final List<String> phoneNumber;
 
   @HiveField(3)
-  final int isFavourite;
+  final List<int> isFavourite;
 
   @HiveField(4)
-  final DateTime createdTime;
+  final List<DateTime> createdTime;
 
   @HiveField(5)
-  final DateTime updatedTime;
+  final List<DateTime> updatedTime;
 
   ContactModelHive({
     required this.name,

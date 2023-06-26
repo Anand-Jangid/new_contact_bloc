@@ -25,7 +25,7 @@ class ContactUpdateLogBloc
     try {
       ContactModelHive contactUpdateLog = await contactsDatabase.getContactUpdateLog(event.id.toInt());
       emit(ContactUpdateLogLoadedSuccessfully(
-          contacts: [contactUpdateLog]));
+          contacts: contactUpdateLog));
     } catch (e) {
       emit(ContactUpdateLogLoadError(error: e.toString()));
     }

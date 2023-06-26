@@ -11,7 +11,7 @@ class ContactUpdateLogInitial extends ContactUpdateLogState {}
 class ContactUpdateLogLoading extends ContactUpdateLogState {}
 
 class ContactUpdateLogLoadedSuccessfully extends ContactUpdateLogState {
-  final List<ContactModelHive> contacts;
+  final ContactModelHive contacts;
   ContactUpdateLogLoadedSuccessfully({
     required this.contacts,
   });

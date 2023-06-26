@@ -83,18 +83,36 @@ class ContactsDatabase {
   Future<int> update(Contact contact) async {
     if (contactsBox.containsKey(contact.id.toString())) {
       var getContacts = contactsBox.get(contact.id.toString());
-
-      await contactsBox.put(contact.id.toString(), getContacts!);
+      List<String> nameList = getContacts!.name;
+      List<String> emailList = getContacts.email;
+      List<String> phoneNumberList = getContacts.phoneNumber;
+      List<int> isFavouriteList = getContacts.isFavourite;
+      List<DateTime> createdDateList = getContacts.createdTime;
+      List<DateTime> updatedDateList = getContacts.updatedTime;
+      nameList.insert(0, contact.name);
+      emailList.insert(0, contact.email);
+      phoneNumberList.insert(0, contact.phoneNumber);
+      isFavouriteList.insert(0, contact.isFavourite);
+      createdDateList.insert(0, contact.createdTime);
+      updatedDateList.insert(0, contact.updatedTime);
+      var newContact = ContactModelHive(
+          name: nameList,
+          email: emailList,
+          phoneNumber: phoneNumberList,
+          isFavourite: isFavouriteList,
+          createdTime: createdDateList,
+          updatedTime: updatedDateList);
+      await contactsBox.put(contact.id.toString(), newContact);
     } else {
       await contactsBox.put(
           contact.id.toString(),
           ContactModelHive(
-              name: contact.name,
-              email: contact.email,
-              phoneNumber: contact.phoneNumber,
-              isFavourite: contact.isFavourite,
-              createdTime: contact.createdTime,
-              updatedTime: contact.updatedTime));
+              name: [contact.name],
+              email: [contact.email],
+              phoneNumber: [contact.phoneNumber],
+              isFavourite: [contact.isFavourite],
+              createdTime: [contact.createdTime],
+              updatedTime: [contact.updatedTime]));
     }
     final db = await instance.database;
     return db.update(

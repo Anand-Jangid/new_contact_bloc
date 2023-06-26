@@ -17,12 +17,12 @@ class ContactModelHiveAdapter extends TypeAdapter<ContactModelHive> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ContactModelHive(
-      name: fields[0] as String,
-      email: fields[1] as String,
-      phoneNumber: fields[2] as String,
-      isFavourite: fields[3] as int,
-      createdTime: fields[4] as DateTime,
-      updatedTime: fields[5] as DateTime,
+      name: (fields[0] as List).cast<String>(),
+      email: (fields[1] as List).cast<String>(),
+      phoneNumber: (fields[2] as List).cast<String>(),
+      isFavourite: (fields[3] as List).cast<int>(),
+      createdTime: (fields[4] as List).cast<DateTime>(),
+      updatedTime: (fields[5] as List).cast<DateTime>(),
     );
   }
 

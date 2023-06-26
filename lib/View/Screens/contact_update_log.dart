@@ -32,13 +32,7 @@ class _ContactUpdateLogState extends State<ContactUpdateLog> {
           switch (state.runtimeType) {
             case ContactUpdateLogLoadedSuccessfully:
               final successState = state as ContactUpdateLogLoadedSuccessfully;
-              return ListView.builder(
-                  itemCount: successState.contacts.length,
-                  itemBuilder: (context, index) {
-                    return ContactUpdateLoagTile(
-                      contact: successState.contacts[index],
-                    );
-                  });
+              return ContactUpdateLoagTile(contact: successState.contacts);
             case ContactUpdateLogLoadError:
               final errorState = state as ContactUpdateLogLoadError;
               return Center(child: Text(errorState.error));
