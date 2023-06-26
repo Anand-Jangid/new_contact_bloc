@@ -32,7 +32,6 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
       AddButtonTapped event, Emitter<ContactDetailState> emit) async {
     emit(ContactProcessingState());
     try {
-      print(event.contact.updatedTime);
       var contact = await contactsDatabase.create(event.contact);
       //TODO: check the contact is created successfully
       emit(MoveToBackPage());
@@ -46,7 +45,6 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
     emit(ContactProcessingState());
     try {
       var result = await contactsDatabase.update(event.contact);
-      print("moving to back screen");
       emit(MoveToBackPage());
     } catch (e) {
       emit(ContactErrorState(error: e.toString()));

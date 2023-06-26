@@ -11,10 +11,12 @@ class ContactsDatabase {
 
   ContactsDatabase._init();
 
-  Box<List<ContactModelHive>> contactsBox =
-      Hive.box<List<ContactModelHive>>("contactInHive");
+  late Box<ContactModelHive> contactsBox;
+  //     Hive.box<List<ContactModelHive>>("contactInHive");
 
   Future<Database> get database async {
+    await Hive.openBox<ContactModelHive>("contactInHive");
+    contactsBox = Hive.box<ContactModelHive>("contactInHive");
     if (_database != null) return _database!;
     _database = await _initDB('contacts.db');
     return _database!;
@@ -48,7 +50,6 @@ class ContactsDatabase {
   Future<Contact> create(Contact contact) async {
     final db = await instance.database;
     final id = await db.insert(tableContacts, contact.toJson());
-    print(id);
     return contact.copy(id: id);
   }
 
@@ -74,74 +75,28 @@ class ContactsDatabase {
     return result.map((json) => Contact.fromJson(json)).toList();
   }
 
-  List<ContactModelHive> getContactUpdateLog(int id) {
-    var contacts = contactsBox.get(id);
-    if (contacts != null) {
-      return contacts;
-    }
-    // if (contacts!.contacts.isEmpty) {
-    //   return contacts.contacts;
-    // }
-    return [];
+  Future<ContactModelHive> getContactUpdateLog(int id) async {
+    var contacts = contactsBox.get(id.toString());
+    return contacts!;
   }
 
   Future<int> update(Contact contact) async {
-    print("1");
-    if (contactsBox.containsKey(contact.id)) {
-      print("2");
-      var contacts = contactsBox.get(contact.id);
-      print("2.1");
-      if (contacts?.isEmpty ?? true) {
-        await contactsBox.put(contact.id, [
+    if (contactsBox.containsKey(contact.id.toString())) {
+      var getContacts = contactsBox.get(contact.id.toString());
+
+      await contactsBox.put(contact.id.toString(), getContacts!);
+    } else {
+      await contactsBox.put(
+          contact.id.toString(),
           ContactModelHive(
               name: contact.name,
               email: contact.email,
               phoneNumber: contact.phoneNumber,
               isFavourite: contact.isFavourite,
               createdTime: contact.createdTime,
-              updatedTime: contact.updatedTime)
-        ]);
-      }
-      else{
-        contacts!.insert(
-            0,
-            ContactModelHive(
-                name: contact.name,
-                email: contact.email,
-                phoneNumber: contact.phoneNumber,
-                isFavourite: contact.isFavourite,
-                createdTime: contact.createdTime,
-                updatedTime: contact.updatedTime));
-        await contactsBox.put(contact.id, contacts);
-      }
-    } else {
-      print("3");
-
-      await contactsBox.put(contact.id, [
-        ContactModelHive(
-            name: contact.name,
-            email: contact.email,
-            phoneNumber: contact.phoneNumber,
-            isFavourite: contact.isFavourite,
-            createdTime: contact.createdTime,
-            updatedTime: contact.updatedTime)
-      ]);
-      // await contactsBox.put(
-      //     contact.id,
-      //     ContactModelHive(id: contact.id!, contacts: [
-      //       Contact(
-      //           name: contact.name,
-      //           email: contact.email,
-      //           phoneNumber: contact.phoneNumber,
-      //           isFavourite: contact.isFavourite,
-      //           createdTime: contact.createdTime,
-      //           updatedTime: contact.updatedTime)
-      //     ]));
-      print("3.1");
+              updatedTime: contact.updatedTime));
     }
-    print("4");
     final db = await instance.database;
-    print("5");
     return db.update(
       tableContacts,
       contact.toJson(),
@@ -151,6 +106,9 @@ class ContactsDatabase {
   }
 
   Future<int> delete(int id) async {
+    //first deleting from hive its change log
+    contactsBox.delete(id.toString());
+
     final db = await instance.database;
 
     return await db.delete(
@@ -161,8 +119,9 @@ class ContactsDatabase {
   }
 
   Future close() async {
+    //closing box
+    await contactsBox.close();
     final db = await instance.database;
-
     db.close();
   }
 }

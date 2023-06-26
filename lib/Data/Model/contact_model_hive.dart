@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:hive/hive.dart';
 
-import 'contact_model.dart';
+// import 'contact_model.dart';
 
 part 'contact_model_hive.g.dart';
 

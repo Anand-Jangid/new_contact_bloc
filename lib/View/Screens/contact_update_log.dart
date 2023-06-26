@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../Logic/bloc/contact_update_log/bloc/contact_update_log_bloc.dart';
+import '../../Logic/bloc/contact_update_log/contact_update_log_bloc.dart';
 import '../Widget/contact_update_log_tile.dart';
 
 class ContactUpdateLog extends StatefulWidget {

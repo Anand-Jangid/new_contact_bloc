@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:new_contact_bloc/Data/DataProvider/contact_provider.dart';
 import 'package:new_contact_bloc/View/HomeScreens/contact_list_page.dart';
 import 'package:new_contact_bloc/View/Screens/add_new_contact_screen.dart';
 import 'package:new_contact_bloc/View/HomeScreens/image_grid_view.dart';
@@ -7,7 +8,6 @@ import '../../Logic/bloc/contact/contact_bloc.dart';
 
 class ContactScreen extends StatefulWidget {
   const ContactScreen({super.key});
-
   @override
   State<ContactScreen> createState() => _ContactScreenState();
 }
@@ -17,6 +17,11 @@ class _ContactScreenState extends State<ContactScreen> {
   void initState() {
     super.initState();
     BlocProvider.of<ContactBloc>(context).add(AllButtonTappedEvent());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override

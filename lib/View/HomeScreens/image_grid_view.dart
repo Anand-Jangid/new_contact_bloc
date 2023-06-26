@@ -38,7 +38,6 @@ class _ImageGridViewState extends State<ImageGridView> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             await _onImageButtonPressed(ImageSource.camera, context: context);
-            print(_mediaFileList);
           },
           child: const Icon(Icons.add),
         ),

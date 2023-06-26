@@ -24,6 +24,8 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     on<ContactListTileTapped>(contactListTileTapped);
 
     on<ImageButtonTappedEvent>(imageButtonTappedEvent);
+
+    on<ExitingApp>(exitingApp);
   }
 
   //! Load all contacts
@@ -72,5 +74,9 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
   FutureOr<void> imageButtonTappedEvent(
       ImageButtonTappedEvent event, Emitter<ContactState> emit) {
     emit(ImageTappedState());
+  }
+
+  FutureOr<void> exitingApp(ExitingApp event, Emitter<ContactState> emit) async{
+    await contactsDatabase.close();
   }
 }

@@ -20,3 +20,5 @@ class ContactListTileTapped extends ContactEvent {
     required this.contact,
   });
 }
+
+class ExitingApp extends ContactEvent{}
