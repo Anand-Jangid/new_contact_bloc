@@ -25,6 +25,7 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
   late final _numberController;
   late int isFavourite;
   File? imagefile;
+  String imageString = '';
 
   @override
   void initState() {
@@ -34,9 +35,11 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
     _numberController =
         TextEditingController(text: widget.contact?.phoneNumber);
     isFavourite = widget.contact?.isFavourite ?? 0;
-    if(widget.contact != null){
+    if (widget.contact != null) {
       if (widget.contact!.imageString != '') {
         imagefile = File(widget.contact!.imageString);
+      } else if (imageString != '') {
+        imagefile = File(imageString);
       }
     }
   }
@@ -89,18 +92,21 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           onPressed: () {
-                            context.read<ContactDetailBloc>().add(GalarayImageSelected(
-                                contact: Contact(
-                                    id: widget.contact?.id,
-                                    imageString: '',
-                                    name: _nameController.text,
-                                    email: _emailController.text,
-                                    phoneNumber: _numberController.text,
-                                    isFavourite: isFavourite,
-                                    createdTime: widget.contact?.createdTime ??
-                                        DateTime.now(),
-                                    updatedTime: widget.contact?.updatedTime ??
-                                        DateTime.now())));
+                            context.read<ContactDetailBloc>().add(
+                                GalarayImageSelected(
+                                    contact: Contact(
+                                        id: widget.contact?.id,
+                                        imageString: '',
+                                        name: _nameController.text,
+                                        email: _emailController.text,
+                                        phoneNumber: _numberController.text,
+                                        isFavourite: isFavourite,
+                                        createdTime:
+                                            widget.contact?.createdTime ??
+                                                DateTime.now(),
+                                        updatedTime:
+                                            widget.contact?.updatedTime ??
+                                                DateTime.now())));
                           },
                         ),
                         const SizedBox(
@@ -112,17 +118,20 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           onPressed: () {
-                            context.read<ContactDetailBloc>().add(CameraImageSelected(
-                                contact: Contact(
-                                    id: widget.contact?.id,
-                                    name: _nameController.text,
-                                    email: _emailController.text,
-                                    phoneNumber: _numberController.text,
-                                    isFavourite: isFavourite,
-                                    createdTime: widget.contact?.createdTime ??
-                                        DateTime.now(),
-                                    updatedTime: widget.contact?.updatedTime ??
-                                        DateTime.now(),
+                            context.read<ContactDetailBloc>().add(
+                                CameraImageSelected(
+                                    contact: Contact(
+                                        id: widget.contact?.id,
+                                        name: _nameController.text,
+                                        email: _emailController.text,
+                                        phoneNumber: _numberController.text,
+                                        isFavourite: isFavourite,
+                                        createdTime:
+                                            widget.contact?.createdTime ??
+                                                DateTime.now(),
+                                        updatedTime:
+                                            widget.contact?.updatedTime ??
+                                                DateTime.now(),
                                         imageString: '')));
                           },
                         )

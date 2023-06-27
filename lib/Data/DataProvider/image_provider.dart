@@ -13,6 +13,16 @@ class ImageDatabase {
 
   static Database? _database;
 
+  Future<String?> getImageString(ImageSource imageSource) async {
+    final File? pickedImage = await pickImage(imageSource);
+    if (pickedImage != null) {
+      final String fileName = basename(pickedImage.path);
+      final Directory appDir = await getApplicationDocumentsDirectory();
+      final String imagePath = '${appDir.path}/$fileName';
+      return imagePath;
+    }
+  }
+
   Future<File?> pickImage(ImageSource imageSource) async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: imageSource);

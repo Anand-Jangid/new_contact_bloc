@@ -81,57 +81,11 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
   }
 
   FutureOr<void> cameraImageSelected(
-      CameraImageSelected event, Emitter<ContactDetailState> emit) async{
-        try {
-          final File? pickedImage =
-              await imageDatabase.pickImage(ImageSource.camera);
-
-          if (pickedImage != null) {
-            final String fileName = basename(pickedImage.path);
-            final Directory appDir = await getApplicationDocumentsDirectory();
-            final String imagePath = '${appDir.path}/$fileName';
-
-            await pickedImage.copy(imagePath);
-
-
-            //! Instead of adding to imagemode we need to add it to contact directly
-            // final ImageModel imageModel = ImageModel(imagePath: imagePath);
-            // var imageId = await imageDatabase.insertImage(imageModel);
-            contactsDatabase.update(Contact(
-                id: event.contact.id,
-                name: event.contact.name,
-                email: event.contact.email,
-                phoneNumber: event.contact.phoneNumber,
-                isFavourite: event.contact.isFavourite,
-                createdTime: event.contact.createdTime,
-                updatedTime: event.contact.updatedTime,
-                imageString: imagePath));
-
-            // var images = await imageDatabase.getImages();
-            emit(MoveToBackPage());
-          }
-        } catch (e) {
-          emit(ContactErrorState(error: e.toString()));
-        }
-      }
-
-  FutureOr<void> galarayImageSelected(
-      GalarayImageSelected event, Emitter<ContactDetailState> emit) async {
+      CameraImageSelected event, Emitter<ContactDetailState> emit) async {
     try {
-      final File? pickedImage =
-          await imageDatabase.pickImage(ImageSource.gallery);
-
-      if (pickedImage != null) {
-        final String fileName = basename(pickedImage.path);
-        final Directory appDir = await getApplicationDocumentsDirectory();
-        final String imagePath = '${appDir.path}/$fileName';
-
-        await pickedImage.copy(imagePath);
-
-
-        //! Instead of adding to imagemode we need to add it to contact directly
-        // final ImageModel imageModel = ImageModel(imagePath: imagePath);
-        // var imageId = await imageDatabase.insertImage(imageModel);
+      final String? imageString =
+          await imageDatabase.getImageString(ImageSource.camera);
+      if(imageString != null){
         contactsDatabase.update(Contact(
             id: event.contact.id,
             name: event.contact.name,
@@ -140,9 +94,31 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
             isFavourite: event.contact.isFavourite,
             createdTime: event.contact.createdTime,
             updatedTime: event.contact.updatedTime,
-            imageString: imagePath));
+            imageString: imageString));
+        
+        emit(MoveToBackPage());
+      }
+    } catch (e) {
+      emit(ContactErrorState(error: e.toString()));
+    }
+  }
 
-        // var images = await imageDatabase.getImages();
+  FutureOr<void> galarayImageSelected(
+      GalarayImageSelected event, Emitter<ContactDetailState> emit) async {
+    try {
+      final String? imageString =
+          await imageDatabase.getImageString(ImageSource.gallery);
+      if(imageString != null){
+        contactsDatabase.update(Contact(
+            id: event.contact.id,
+            name: event.contact.name,
+            email: event.contact.email,
+            phoneNumber: event.contact.phoneNumber,
+            isFavourite: event.contact.isFavourite,
+            createdTime: event.contact.createdTime,
+            updatedTime: event.contact.updatedTime,
+            imageString: imageString));
+        
         emit(MoveToBackPage());
       }
     } catch (e) {
