@@ -1,13 +1,14 @@
-final String tableContacts = 'contacts';
+const String tableContacts = 'contacts';
 
 class ContactFields {
-  static final String id = '_id';
-  static final String name = 'name';
-  static final String email = 'email';
-  static final String phoneNumber = 'phoneNumber';
-  static final String isFavourite = 'isFavourite';
-  static final String time = 'time';
-  static final String updatedTime = 'updatedTime';
+  static const String id = '_id';
+  static const String name = 'name';
+  static const String email = 'email';
+  static const String phoneNumber = 'phoneNumber';
+  static const String isFavourite = 'isFavourite';
+  static const String time = 'time';
+  static const String updatedTime = 'updatedTime';
+  static const String imageString = 'imageString';
 
   static final List<String> values = [
     id,
@@ -17,6 +18,7 @@ class ContactFields {
     isFavourite,
     time,
     updatedTime,
+    imageString
   ];
 }
 
@@ -28,35 +30,36 @@ class Contact {
   final int isFavourite;
   final DateTime createdTime;
   final DateTime updatedTime;
+  final String imageString;
 
-  Contact({
-    this.id,
-    required this.name,
-    required this.email,
-    required this.phoneNumber,
-    required this.isFavourite,
-    required this.createdTime,
-    required this.updatedTime
-  });
+  Contact(
+      {this.id,
+      required this.name,
+      required this.email,
+      required this.phoneNumber,
+      required this.isFavourite,
+      required this.createdTime,
+      required this.updatedTime,
+      required this.imageString});
 
-  Contact copy({
-    int? id,
-    String? name,
-    String? email,
-    String? phoneNumber,
-    int? isFavourite,
-    DateTime? createdTime,
-    DateTime? updatedTime
-  }) =>
+  Contact copy(
+          {int? id,
+          String? name,
+          String? email,
+          String? phoneNumber,
+          int? isFavourite,
+          DateTime? createdTime,
+          DateTime? updatedTime,
+          String? imageString}) =>
       Contact(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        email: email ?? this.email,
-        phoneNumber: phoneNumber ?? this.phoneNumber,
-        isFavourite: isFavourite ?? this.isFavourite,
-        createdTime: createdTime ?? this.createdTime,
-        updatedTime: updatedTime ?? this.updatedTime
-      );
+          id: id ?? this.id,
+          name: name ?? this.name,
+          email: email ?? this.email,
+          phoneNumber: phoneNumber ?? this.phoneNumber,
+          isFavourite: isFavourite ?? this.isFavourite,
+          createdTime: createdTime ?? this.createdTime,
+          updatedTime: updatedTime ?? this.updatedTime,
+          imageString: imageString ?? this.imageString);
 
   static Contact fromJson(Map<String, dynamic> json) => Contact(
       id: json[ContactFields.id] as int?,
@@ -65,8 +68,8 @@ class Contact {
       phoneNumber: json[ContactFields.phoneNumber] as String,
       isFavourite: json[ContactFields.isFavourite] as int,
       createdTime: DateTime.parse(json[ContactFields.time] as String),
-      updatedTime: DateTime.parse(json[ContactFields.updatedTime] as String)
-    );
+      updatedTime: DateTime.parse(json[ContactFields.updatedTime] as String),
+      imageString: json[ContactFields.imageString] as String);
 
   Map<String, dynamic> toJson() => {
         ContactFields.id: id,
@@ -75,6 +78,7 @@ class Contact {
         ContactFields.phoneNumber: phoneNumber,
         ContactFields.isFavourite: isFavourite,
         ContactFields.time: createdTime.toIso8601String(),
-        ContactFields.updatedTime : updatedTime.toIso8601String(),
+        ContactFields.updatedTime: updatedTime.toIso8601String(),
+        ContactFields.imageString: imageString,
       };
 }

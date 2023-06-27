@@ -28,3 +28,17 @@ class DeleteButtonTapped extends ContactDetailEvent {
 }
 
 class ImageIconTapped extends ContactDetailEvent{}
+
+class CameraImageSelected extends ContactDetailEvent {
+  final Contact contact;
+  CameraImageSelected({
+    required this.contact,
+  });
+}
+
+class GalarayImageSelected extends ContactDetailEvent {
+  final Contact contact;
+  GalarayImageSelected({
+    required this.contact,
+  });
+}

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:new_contact_bloc/Data/Model/contact_model.dart';
@@ -7,7 +9,11 @@ import '../../Logic/bloc/contact_detail/contact_detail_bloc.dart';
 
 class AddNewContactScreen extends StatefulWidget {
   final Contact? contact;
-  const AddNewContactScreen({super.key, this.contact});
+
+  const AddNewContactScreen({
+    super.key,
+    this.contact,
+  });
 
   @override
   State<AddNewContactScreen> createState() => _AddNewContactScreenState();
@@ -18,6 +24,7 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
   late final _emailController;
   late final _numberController;
   late int isFavourite;
+  File? imagefile;
 
   @override
   void initState() {
@@ -27,6 +34,11 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
     _numberController =
         TextEditingController(text: widget.contact?.phoneNumber);
     isFavourite = widget.contact?.isFavourite ?? 0;
+    if(widget.contact != null){
+      if (widget.contact!.imageString != '') {
+        imagefile = File(widget.contact!.imageString);
+      }
+    }
   }
 
   @override
@@ -77,7 +89,18 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           onPressed: () {
-
+                            context.read<ContactDetailBloc>().add(GalarayImageSelected(
+                                contact: Contact(
+                                    id: widget.contact?.id,
+                                    imageString: '',
+                                    name: _nameController.text,
+                                    email: _emailController.text,
+                                    phoneNumber: _numberController.text,
+                                    isFavourite: isFavourite,
+                                    createdTime: widget.contact?.createdTime ??
+                                        DateTime.now(),
+                                    updatedTime: widget.contact?.updatedTime ??
+                                        DateTime.now())));
                           },
                         ),
                         const SizedBox(
@@ -89,7 +112,18 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           onPressed: () {
-                            
+                            context.read<ContactDetailBloc>().add(CameraImageSelected(
+                                contact: Contact(
+                                    id: widget.contact?.id,
+                                    name: _nameController.text,
+                                    email: _emailController.text,
+                                    phoneNumber: _numberController.text,
+                                    isFavourite: isFavourite,
+                                    createdTime: widget.contact?.createdTime ??
+                                        DateTime.now(),
+                                    updatedTime: widget.contact?.updatedTime ??
+                                        DateTime.now(),
+                                        imageString: '')));
                           },
                         )
                       ],
@@ -113,20 +147,25 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    InkWell(
-                      onTap: () {
-                        context
-                            .read<ContactDetailBloc>()
-                            .add(ImageIconTapped());
-                      },
-                      child: const CircleAvatar(
-                        radius: 60,
-                        child: Icon(
-                          Icons.person,
-                          size: 110,
-                        ),
-                      ),
-                    ),
+                    (imagefile != null)
+                        ? CircleAvatar(
+                            radius: 60,
+                            child: Image.file(imagefile!),
+                          )
+                        : InkWell(
+                            onTap: () {
+                              context
+                                  .read<ContactDetailBloc>()
+                                  .add(ImageIconTapped());
+                            },
+                            child: const CircleAvatar(
+                              radius: 60,
+                              child: Icon(
+                                Icons.person,
+                                size: 110,
+                              ),
+                            ),
+                          ),
                     const SizedBox(
                       height: 40,
                     ),
@@ -192,6 +231,7 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                     context.read<ContactDetailBloc>().add(
                                         AddButtonTapped(
                                             contact: Contact(
+                                                imageString: '',
                                                 name: _nameController.text,
                                                 email: _emailController.text,
                                                 phoneNumber:
@@ -225,6 +265,7 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                         context.read<ContactDetailBloc>().add(
                                             UpdateButtonTapped(
                                                 contact: Contact(
+                                                    imageString: '',
                                                     id: widget.contact!.id,
                                                     name: _nameController.text,
                                                     email:

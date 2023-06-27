@@ -29,7 +29,7 @@ class _ContactScreenState extends State<ContactScreen> {
     return BlocConsumer<ContactBloc, ContactState>(
       listenWhen: (previous, current) => current is ContactActionState,
       buildWhen: (previous, current) => current is! ContactActionState,
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is ContactAddFloatButtonTappedState) {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => const AddNewContactScreen()));

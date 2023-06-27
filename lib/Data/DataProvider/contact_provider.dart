@@ -12,7 +12,6 @@ class ContactsDatabase {
   ContactsDatabase._init();
 
   late Box<ContactModelHive> contactsBox;
-  //     Hive.box<List<ContactModelHive>>("contactInHive");
 
   Future<Database> get database async {
     await Hive.openBox<ContactModelHive>("contactInHive");
@@ -42,7 +41,8 @@ class ContactsDatabase {
         ${ContactFields.phoneNumber} $textType,
         ${ContactFields.isFavourite} $boolType,
         ${ContactFields.time} $textType,
-        ${ContactFields.updatedTime} $textType
+        ${ContactFields.updatedTime} $textType,
+        ${ContactFields.imageString} TEXT
         )
       ''');
   }
