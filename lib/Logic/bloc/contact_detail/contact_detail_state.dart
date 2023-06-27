@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'contact_detail_bloc.dart';
 
 @immutable
@@ -16,9 +17,7 @@ class ContactProcessingState extends ContactDetailState {}
 //when there is error in doing some action
 class ContactErrorState extends ContactDetailState {
   final String error;
-  ContactErrorState({
-    required this.error
-  });
+  ContactErrorState({required this.error});
 }
 
-class ShowModelBottomSheetOfPhoto extends ContactDetailActionState{}
+class ShowModelBottomSheetOfPhoto extends ContactDetailActionState {}

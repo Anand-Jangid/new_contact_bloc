@@ -49,7 +49,7 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
           } else if (state is ShowModelBottomSheetOfPhoto) {
             showModalBottomSheet<void>(
               context: context,
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20.0),
                   topRight: Radius.circular(20.0),
@@ -60,19 +60,38 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                   heightFactor: 0.5,
                   widthFactor: 0.5,
                   child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Photo", style: Theme.of(context).textTheme.bodyLarge,),
-                        SizedBox(
+                        Text(
+                          "Photo",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        const SizedBox(
                           height: 20,
                         ),
-                        Text("Take Photo from Gallery", style: Theme.of(context).textTheme.bodyLarge,),
-                        SizedBox(
+                        TextButton(
+                          child: Text(
+                            "Take Photo from Gallery",
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          onPressed: () {
+
+                          },
+                        ),
+                        const SizedBox(
                           height: 20,
                         ),
-                        Text("Take photo from camera", style: Theme.of(context).textTheme.bodyLarge,)
+                        TextButton(
+                          child: Text(
+                            "Take photo from camera",
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          onPressed: () {
+                            
+                          },
+                        )
                       ],
                     ),
                   ),

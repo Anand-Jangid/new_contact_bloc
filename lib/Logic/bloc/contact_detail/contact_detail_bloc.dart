@@ -1,8 +1,6 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-
 import '../../../../Data/DataProvider/contact_provider.dart';
 import '../../../../Data/Model/contact_model.dart';
 
@@ -12,7 +10,8 @@ part 'contact_detail_state.dart';
 class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
   final ContactsDatabase contactsDatabase;
 
-  ContactDetailBloc({required this.contactsDatabase})
+  ContactDetailBloc(
+      {required this.contactsDatabase})
       : super(ContactDetailInitial()) {
     on<CancelButtonTapped>(cancelButtonTapped);
 
