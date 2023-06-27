@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'Data/Model/contact_model_hive.dart';
 import 'Logic/bloc/contact/contact_bloc.dart';
 import 'Logic/bloc/contact_update_log/contact_update_log_bloc.dart';
-import 'Logic/bloc/image/bloc/image_bloc.dart';
+import 'Logic/bloc/image/image_bloc.dart';
 import 'View/Screens/contact_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
