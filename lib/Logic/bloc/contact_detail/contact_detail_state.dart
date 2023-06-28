@@ -22,6 +22,7 @@ class ContactErrorState extends ContactDetailState {
 
 class ShowModelBottomSheetOfPhoto extends ContactDetailActionState {}
 
+//Load image while adding data
 class ImageLoadedState extends ContactDetailState {
   final List<String>? imageString;
   ImageLoadedState({
@@ -36,6 +37,7 @@ class ShowBigImageState extends ContactDetailActionState {
   });
 }
 
+//Load images of previously created record
 class AllImagesLoadedState extends ContactDetailState {
   final List<String> images;
   AllImagesLoadedState({
@@ -43,4 +45,5 @@ class AllImagesLoadedState extends ContactDetailState {
   });
 }
 
+//No image found in previously created record
 class NoImageFoundState extends ContactDetailState{}

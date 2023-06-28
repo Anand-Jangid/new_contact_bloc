@@ -147,9 +147,9 @@ class ContactsDatabase {
       var getImagesModel = imagesBox.get(contact.id.toString());
       if (getImagesModel != null) {
         var imagesFromHive = getImagesModel.images;
-        if (imagesFromHive != null && imagesFromUser != null) {
-          imagesFromHive.addAll(imagesFromUser);
-        }
+        // if (imagesFromHive != null && imagesFromUser != null) {
+        //   imagesFromHive.addAll(imagesFromUser);
+        // }
         //! Update hive record
       }
       // List<String> images = getImages.images;

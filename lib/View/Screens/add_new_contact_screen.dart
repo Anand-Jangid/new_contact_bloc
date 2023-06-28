@@ -28,9 +28,8 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
   late final _numberController;
   late int isFavourite;
   File? imagefile;
-  String imageString = '';
+  // String imageString = '';
   List<String> images = [];
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
@@ -41,9 +40,9 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
         TextEditingController(text: widget.contact?.phoneNumber);
     isFavourite = widget.contact?.isFavourite ?? 0;
     if (widget.contact != null) {
-      if (imageString != '') {
-        imagefile = File(imageString);
-      }
+      // if (imageString != '') {
+      //   imagefile = File(imageString);
+      // }
       context
           .read<ContactDetailBloc>()
           .add(LoadAllImagesEvent(id: widget.contact!.id!));
@@ -184,33 +183,33 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
 
                           ///Image
                           ? Container(
-                            height: 300,
-                            child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: state.imageString!.length,
-                                itemBuilder: ((context, index) {
-                                  return InkWell(
-                                    onTap: () {
-                                      context.read<ContactDetailBloc>().add(
-                                          ShowBigImageEvent(
-                                              imageString:
-                                                  state.imageString![index]));
-                                    },
-                                    child: CircleAvatar(
-                                      radius: 100,
-                                      child: ClipOval(
-                                          child: Image.file(
-                                        File(
-                                          state.imageString![index],
-                                        ),
-                                        width: 200,
-                                        height: 200,
-                                        fit: BoxFit.cover,
-                                      )),
-                                    ),
-                                  );
-                                })),
-                          )
+                              height: 300,
+                              child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: state.imageString!.length,
+                                  itemBuilder: ((context, index) {
+                                    return InkWell(
+                                      onTap: () {
+                                        context.read<ContactDetailBloc>().add(
+                                            ShowBigImageEvent(
+                                                imageString:
+                                                    state.imageString![index]));
+                                      },
+                                      child: CircleAvatar(
+                                        radius: 100,
+                                        child: ClipOval(
+                                            child: Image.file(
+                                          File(
+                                            state.imageString![index],
+                                          ),
+                                          width: 200,
+                                          height: 200,
+                                          fit: BoxFit.cover,
+                                        )),
+                                      ),
+                                    );
+                                  })),
+                            )
                           : InkWell(
                               onTap: () {
                                 context
@@ -307,21 +306,17 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                 ElevatedButton(
                                     onPressed: () {
                                       context.read<ContactDetailBloc>().add(
-                                              AddButtonTapped(
-                                                  images: state.imageString,
-                                                  contact: Contact(
-                                                      name:
-                                                          _nameController.text,
-                                                      email:
-                                                          _emailController.text,
-                                                      phoneNumber:
-                                                          _numberController
-                                                              .text,
-                                                      isFavourite: isFavourite,
-                                                      createdTime:
-                                                          DateTime.now(),
-                                                      updatedTime:
-                                                          DateTime.now())));
+                                          AddButtonTapped(
+                                              images: state.imageString,
+                                              contact: Contact(
+                                                  name: _nameController.text,
+                                                  email: _emailController.text,
+                                                  phoneNumber:
+                                                      _numberController.text,
+                                                  isFavourite: isFavourite,
+                                                  createdTime: DateTime.now(),
+                                                  updatedTime:
+                                                      DateTime.now())));
                                     },
                                     child: const Text("ADD")),
                               ],
@@ -346,27 +341,24 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                     ElevatedButton(
                                         onPressed: () {
                                           context.read<ContactDetailBloc>().add(
-                                                  UpdateButtonTapped(
-                                                      images: state.imageString,
-                                                      contact: Contact(
-                                                          id: widget
-                                                              .contact!.id,
-                                                          name: _nameController
+                                              UpdateButtonTapped(
+                                                  images: state.imageString,
+                                                  contact: Contact(
+                                                      id: widget.contact!.id,
+                                                      name:
+                                                          _nameController.text,
+                                                      email:
+                                                          _emailController.text,
+                                                      phoneNumber:
+                                                          _numberController
                                                               .text,
-                                                          email:
-                                                              _emailController
-                                                                  .text,
-                                                          phoneNumber:
-                                                              _numberController
-                                                                  .text,
-                                                          isFavourite:
-                                                              isFavourite,
-                                                          createdTime: widget
-                                                                  .contact
-                                                                  ?.createdTime ??
-                                                              DateTime.now(),
-                                                          updatedTime:
-                                                              DateTime.now())));
+                                                      isFavourite: isFavourite,
+                                                      createdTime: widget
+                                                              .contact
+                                                              ?.createdTime ??
+                                                          DateTime.now(),
+                                                      updatedTime:
+                                                          DateTime.now())));
                                         },
                                         child: const Text("Update")),
                                     const SizedBox(
@@ -524,7 +516,7 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                     context.read<ContactDetailBloc>().add(
                                         UpdateButtonTapped(
                                             images:
-                                                state.images ?? [imageString],
+                                                state.images,
                                             contact: Contact(
                                                 id: widget.contact!.id,
                                                 name: _nameController.text,
@@ -575,39 +567,20 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      (imagefile != null)
-                          ? InkWell(
-                              onTap: () {
-                                context.read<ContactDetailBloc>().add(
-                                    ShowBigImageEvent(
-                                        imageString: imageString));
-                              },
-                              child: CircleAvatar(
-                                  radius: 100,
-                                  // backgroundImage: FileImage(imagefile!),
-                                  child: ClipOval(
-                                    child: Image.file(
-                                      File(imageString),
-                                      width: 200,
-                                      height: 200,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  )),
-                            )
-                          : InkWell(
-                              onTap: () {
-                                context
-                                    .read<ContactDetailBloc>()
-                                    .add(ImageIconTapped());
-                              },
-                              child: const CircleAvatar(
-                                radius: 60,
-                                child: Icon(
-                                  Icons.person,
-                                  size: 110,
-                                ),
-                              ),
-                            ),
+                      InkWell(
+                        onTap: () {
+                          context
+                              .read<ContactDetailBloc>()
+                              .add(ImageIconTapped());
+                        },
+                        child: const CircleAvatar(
+                          radius: 60,
+                          child: Icon(
+                            Icons.person,
+                            size: 110,
+                          ),
+                        ),
+                      ),
                       const SizedBox(
                         height: 40,
                       ),
@@ -670,40 +643,17 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                 // Add button
                                 ElevatedButton(
                                     onPressed: () {
-                                      (imageString == '')
-                                          ? context
-                                              .read<ContactDetailBloc>()
-                                              .add(AddButtonTapped(
-                                                  contact: Contact(
-                                                      name:
-                                                          _nameController.text,
-                                                      email:
-                                                          _emailController.text,
-                                                      phoneNumber:
-                                                          _numberController
-                                                              .text,
-                                                      isFavourite: isFavourite,
-                                                      createdTime:
-                                                          DateTime.now(),
-                                                      updatedTime:
-                                                          DateTime.now())))
-                                          : context
-                                              .read<ContactDetailBloc>()
-                                              .add(AddButtonTapped(
-                                                  images: [imageString],
-                                                  contact: Contact(
-                                                      name:
-                                                          _nameController.text,
-                                                      email:
-                                                          _emailController.text,
-                                                      phoneNumber:
-                                                          _numberController
-                                                              .text,
-                                                      isFavourite: isFavourite,
-                                                      createdTime:
-                                                          DateTime.now(),
-                                                      updatedTime:
-                                                          DateTime.now())));
+                                      context.read<ContactDetailBloc>().add(
+                                          AddButtonTapped(
+                                              contact: Contact(
+                                                  name: _nameController.text,
+                                                  email: _emailController.text,
+                                                  phoneNumber:
+                                                      _numberController.text,
+                                                  isFavourite: isFavourite,
+                                                  createdTime: DateTime.now(),
+                                                  updatedTime:
+                                                      DateTime.now())));
                                     },
                                     child: const Text("ADD")),
                               ],
@@ -729,7 +679,6 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                         onPressed: () {
                                           context.read<ContactDetailBloc>().add(
                                               UpdateButtonTapped(
-                                                  images: [imageString],
                                                   contact: Contact(
                                                       id: widget.contact!.id,
                                                       name:
@@ -788,26 +737,7 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      (imagefile != null)
-                          ? InkWell(
-                              onTap: () {
-                                context.read<ContactDetailBloc>().add(
-                                    ShowBigImageEvent(
-                                        imageString: imageString));
-                              },
-                              child: CircleAvatar(
-                                  radius: 100,
-                                  // backgroundImage: FileImage(imagefile!),
-                                  child: ClipOval(
-                                    child: Image.file(
-                                      File(imageString),
-                                      width: 200,
-                                      height: 200,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  )),
-                            )
-                          : InkWell(
+                      InkWell(
                               onTap: () {
                                 context
                                     .read<ContactDetailBloc>()
@@ -883,40 +813,17 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                 // Add button
                                 ElevatedButton(
                                     onPressed: () {
-                                      (imageString == '')
-                                          ? context
-                                              .read<ContactDetailBloc>()
-                                              .add(AddButtonTapped(
-                                                  contact: Contact(
-                                                      name:
-                                                          _nameController.text,
-                                                      email:
-                                                          _emailController.text,
-                                                      phoneNumber:
-                                                          _numberController
-                                                              .text,
-                                                      isFavourite: isFavourite,
-                                                      createdTime:
-                                                          DateTime.now(),
-                                                      updatedTime:
-                                                          DateTime.now())))
-                                          : context
-                                              .read<ContactDetailBloc>()
-                                              .add(AddButtonTapped(
-                                                  images: [imageString],
-                                                  contact: Contact(
-                                                      name:
-                                                          _nameController.text,
-                                                      email:
-                                                          _emailController.text,
-                                                      phoneNumber:
-                                                          _numberController
-                                                              .text,
-                                                      isFavourite: isFavourite,
-                                                      createdTime:
-                                                          DateTime.now(),
-                                                      updatedTime:
-                                                          DateTime.now())));
+                                      context.read<ContactDetailBloc>().add(
+                                          AddButtonTapped(
+                                              contact: Contact(
+                                                  name: _nameController.text,
+                                                  email: _emailController.text,
+                                                  phoneNumber:
+                                                      _numberController.text,
+                                                  isFavourite: isFavourite,
+                                                  createdTime: DateTime.now(),
+                                                  updatedTime:
+                                                      DateTime.now())));
                                     },
                                     child: const Text("ADD")),
                               ],
@@ -942,7 +849,6 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                         onPressed: () {
                                           context.read<ContactDetailBloc>().add(
                                               UpdateButtonTapped(
-                                                  images: [imageString],
                                                   contact: Contact(
                                                       id: widget.contact!.id,
                                                       name:
