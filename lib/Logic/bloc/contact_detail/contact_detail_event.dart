@@ -27,7 +27,7 @@ class DeleteButtonTapped extends ContactDetailEvent {
   });
 }
 
-class ImageIconTapped extends ContactDetailEvent{}
+class ImageIconTapped extends ContactDetailEvent {}
 
 class CameraImageSelected extends ContactDetailEvent {
   final Contact contact;
@@ -40,5 +40,12 @@ class GalarayImageSelected extends ContactDetailEvent {
   final Contact contact;
   GalarayImageSelected({
     required this.contact,
+  });
+}
+
+class ImageLoadEvent extends ContactDetailEvent {
+  final ImageSource imageSource;
+  ImageLoadEvent({
+    required this.imageSource,
   });
 }

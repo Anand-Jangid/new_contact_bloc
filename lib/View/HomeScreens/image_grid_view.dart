@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 // import 'package:video_player/video_player.dart';
 import '../../Logic/bloc/contact/contact_bloc.dart';
-import '../../Logic/bloc/contact_detail/contact_detail_bloc.dart';
 
 class ImageGridView extends StatefulWidget {
   const ImageGridView({super.key});

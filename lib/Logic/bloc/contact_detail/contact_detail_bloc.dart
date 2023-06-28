@@ -1,15 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 import 'package:new_contact_bloc/Data/DataProvider/image_provider.dart';
-import 'package:path_provider/path_provider.dart';
 import '../../../../Data/DataProvider/contact_provider.dart';
 import '../../../../Data/Model/contact_model.dart';
-import 'package:path/path.dart';
-
-import '../../../Data/Model/image_model.dart';
 part 'contact_detail_event.dart';
 part 'contact_detail_state.dart';
 
@@ -33,6 +28,8 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
     on<CameraImageSelected>(cameraImageSelected);
 
     on<GalarayImageSelected>(galarayImageSelected);
+
+    on<ImageLoadEvent>(imageLoadEvent);
   }
 
   FutureOr<void> cancelButtonTapped(
@@ -85,7 +82,7 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
     try {
       final String? imageString =
           await imageDatabase.getImageString(ImageSource.camera);
-      if(imageString != null){
+      if (imageString != null) {
         contactsDatabase.update(Contact(
             id: event.contact.id,
             name: event.contact.name,
@@ -95,7 +92,7 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
             createdTime: event.contact.createdTime,
             updatedTime: event.contact.updatedTime,
             imageString: imageString));
-        
+
         emit(MoveToBackPage());
       }
     } catch (e) {
@@ -108,7 +105,7 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
     try {
       final String? imageString =
           await imageDatabase.getImageString(ImageSource.gallery);
-      if(imageString != null){
+      if (imageString != null) {
         contactsDatabase.update(Contact(
             id: event.contact.id,
             name: event.contact.name,
@@ -118,10 +115,21 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
             createdTime: event.contact.createdTime,
             updatedTime: event.contact.updatedTime,
             imageString: imageString));
-        
+
         emit(MoveToBackPage());
       }
     } catch (e) {
+      emit(ContactErrorState(error: e.toString()));
+    }
+  }
+
+  FutureOr<void> imageLoadEvent(
+      ImageLoadEvent event, Emitter<ContactDetailState> emit) async {
+    try {
+      String? imageString =
+          await imageDatabase.getImageString(event.imageSource);
+      emit(ImageLoadedState(imageString: imageString));
+    } on Exception catch (e) {
       emit(ContactErrorState(error: e.toString()));
     }
   }
