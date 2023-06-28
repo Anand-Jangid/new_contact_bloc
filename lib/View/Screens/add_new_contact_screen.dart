@@ -169,10 +169,19 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    (state.imageString != null) ? CircleAvatar(
-                      radius: 60,
-                      child: Image.file(File(state.imageString!)),
-                    ) : InkWell(
+                    (state.imageString != null) 
+                    ? CircleAvatar(
+                        radius: 100,
+                        child: ClipOval(
+                          child: Image.file(
+                            File(state.imageString!,),
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.cover,
+                            )
+                          ),
+                      ) 
+                    : InkWell(
                             onTap: () {
                               context
                                   .read<ContactDetailBloc>()
@@ -185,7 +194,7 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                 size: 110,
                               ),
                             ),
-                          ),
+                    ),
                     // (imagefile != null)
                     //     ? CircleAvatar(
                     //         radius: 60,
@@ -361,9 +370,16 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                   children: [
                     (imagefile != null)
                         ? CircleAvatar(
-                            radius: 60,
-                            child: Image.file(imagefile!),
-                          )
+                            radius: 100,
+                            // backgroundImage: FileImage(imagefile!),
+                            child: ClipOval(
+                          child: Image.file(
+                            File(imageString),
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.cover,
+                          ),
+                        ))
                         : InkWell(
                             onTap: () {
                               context

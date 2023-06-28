@@ -12,10 +12,7 @@ class ImageDatabase {
   Future<String?> getImageString(ImageSource imageSource) async {
     final File? pickedImage = await pickImage(imageSource);
     if (pickedImage != null) {
-      final String fileName = basename(pickedImage.path);
-      final Directory appDir = await getApplicationDocumentsDirectory();
-      final String imagePath = '${appDir.path}/$fileName';
-      return imagePath;
+      return pickedImage.path;
     }
     return null;
   }
