@@ -49,3 +49,10 @@ class ImageLoadEvent extends ContactDetailEvent {
     required this.imageSource,
   });
 }
+
+class ShowBigImageEvent extends ContactDetailEvent {
+  final String imageString;
+  ShowBigImageEvent({
+    required this.imageString,
+  });
+}

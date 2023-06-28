@@ -30,6 +30,8 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
     on<GalarayImageSelected>(galarayImageSelected);
 
     on<ImageLoadEvent>(imageLoadEvent);
+
+    on<ShowBigImageEvent>(showBigImageEvent);
   }
 
   FutureOr<void> cancelButtonTapped(
@@ -132,5 +134,10 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
     } on Exception catch (e) {
       emit(ContactErrorState(error: e.toString()));
     }
+  }
+
+  FutureOr<void> showBigImageEvent(
+      ShowBigImageEvent event, Emitter<ContactDetailState> emit) {
+    emit(ShowBigImageState(imageString: event.imageString));
   }
 }

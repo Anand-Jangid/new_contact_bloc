@@ -28,3 +28,10 @@ class ImageLoadedState extends ContactDetailState {
     this.imageString,
   });
 }
+
+class ShowBigImageState extends ContactDetailActionState {
+  final String imageString;
+  ShowBigImageState({
+    required this.imageString,
+  });
+}

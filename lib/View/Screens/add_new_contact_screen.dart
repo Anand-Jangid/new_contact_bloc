@@ -114,7 +114,9 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                             //             updatedTime:
                             //                 widget.contact?.updatedTime ??
                             //                     DateTime.now())));
-                            context.read<ContactDetailBloc>().add(ImageLoadEvent(imageSource: ImageSource.gallery));
+                            context.read<ContactDetailBloc>().add(
+                                ImageLoadEvent(
+                                    imageSource: ImageSource.gallery));
                             // await getImageString(ImageSource.gallery);
                           },
                         ),
@@ -145,7 +147,9 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                             //                     DateTime.now(),
                             //             imageString: ''))
                             //   );
-                            context.read<ContactDetailBloc>().add(ImageLoadEvent(imageSource: ImageSource.camera));
+                            context.read<ContactDetailBloc>().add(
+                                ImageLoadEvent(
+                                    imageSource: ImageSource.camera));
                           },
                         )
                       ],
@@ -154,6 +158,31 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                 );
               },
             );
+          } else if (state is ShowBigImageState) {
+            showDialog(context: context, builder: ((context) {
+              return AlertDialog(
+                    content: Container(
+                      height: 400,
+                      child: Column(
+                        children: [
+                          Image.file(File(state.imageString),
+                          width: 400,
+                          height: 400,
+                          )
+                        ],
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          // Perform an action when the "OK" button is pressed
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('OK'),
+                      ),
+                    ],
+                  );
+            }));
           }
         },
         builder: (context, state) {
@@ -161,7 +190,7 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
             return const Center(child: CircularProgressIndicator());
           } else if (state is ContactErrorState) {
             return Center(child: Text(state.error));
-          } else if(state is ImageLoadedState){
+          } else if (state is ImageLoadedState) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: SingleChildScrollView(
@@ -169,19 +198,29 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    (state.imageString != null) 
-                    ? CircleAvatar(
-                        radius: 100,
-                        child: ClipOval(
-                          child: Image.file(
-                            File(state.imageString!,),
-                            width: 200,
-                            height: 200,
-                            fit: BoxFit.cover,
-                            )
-                          ),
-                      ) 
-                    : InkWell(
+                    (state.imageString != null)
+
+                        ///Image
+                        ? InkWell(
+                            onTap: () {
+                              context
+                                  .read<ContactDetailBloc>()
+                                  .add(ShowBigImageEvent(imageString: state.imageString!));
+                            },
+                            child: CircleAvatar(
+                              radius: 100,
+                              child: ClipOval(
+                                  child: Image.file(
+                                File(
+                                  state.imageString!,
+                                ),
+                                width: 200,
+                                height: 200,
+                                fit: BoxFit.cover,
+                              )),
+                            ),
+                          )
+                        : InkWell(
                             onTap: () {
                               context
                                   .read<ContactDetailBloc>()
@@ -194,7 +233,7 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                 size: 110,
                               ),
                             ),
-                    ),
+                          ),
                     // (imagefile != null)
                     //     ? CircleAvatar(
                     //         radius: 60,
@@ -279,7 +318,9 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                     context.read<ContactDetailBloc>().add(
                                         AddButtonTapped(
                                             contact: Contact(
-                                                imageString: state.imageString ?? imageString,
+                                                imageString:
+                                                    state.imageString ??
+                                                        imageString,
                                                 name: _nameController.text,
                                                 email: _emailController.text,
                                                 phoneNumber:
@@ -313,7 +354,9 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                         context.read<ContactDetailBloc>().add(
                                             UpdateButtonTapped(
                                                 contact: Contact(
-                                                    imageString: state.imageString ?? imageString,
+                                                    imageString:
+                                                        state.imageString ??
+                                                            imageString,
                                                     id: widget.contact!.id,
                                                     name: _nameController.text,
                                                     email:
@@ -359,8 +402,7 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                 ),
               ),
             );
-
-          }else {
+          } else {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: SingleChildScrollView(
@@ -369,17 +411,24 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     (imagefile != null)
-                        ? CircleAvatar(
-                            radius: 100,
-                            // backgroundImage: FileImage(imagefile!),
-                            child: ClipOval(
-                          child: Image.file(
-                            File(imageString),
-                            width: 200,
-                            height: 200,
-                            fit: BoxFit.cover,
-                          ),
-                        ))
+                        ? InkWell(
+                            onTap: () {
+                              context
+                                  .read<ContactDetailBloc>()
+                                  .add(ShowBigImageEvent(imageString: imageString));
+                            },
+                            child: CircleAvatar(
+                                radius: 100,
+                                // backgroundImage: FileImage(imagefile!),
+                                child: ClipOval(
+                                  child: Image.file(
+                                    File(imageString),
+                                    width: 200,
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )),
+                          )
                         : InkWell(
                             onTap: () {
                               context
