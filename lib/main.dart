@@ -5,6 +5,7 @@ import 'package:new_contact_bloc/Data/DataProvider/image_provider.dart';
 import 'package:new_contact_bloc/Logic/bloc/contact_detail/contact_detail_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'Data/Model/contact_model_hive.dart';
+import 'Data/Model/image_model_hive.dart';
 import 'Logic/bloc/contact/contact_bloc.dart';
 import 'Logic/bloc/contact_update_log/contact_update_log_bloc.dart';
 import 'View/Screens/contact_screen.dart';
@@ -15,6 +16,7 @@ void main() async {
   final hiveDocument = await getApplicationDocumentsDirectory();
   Hive.init(hiveDocument.path);
   Hive.registerAdapter(ContactModelHiveAdapter());
+  Hive.registerAdapter(ImageModelHiveAdapter());
   runApp(MyApp());
 }
 
@@ -33,8 +35,9 @@ class MyApp extends StatelessWidget {
             create: (context) =>
                 ContactBloc(contactsDatabase: contactsDatabase)),
         BlocProvider<ContactDetailBloc>(
-            create: (context) =>
-                ContactDetailBloc(contactsDatabase: contactsDatabase, imageDatabase: imageDatabase)),
+            create: (context) => ContactDetailBloc(
+                contactsDatabase: contactsDatabase,
+                imageDatabase: imageDatabase)),
         BlocProvider<ContactUpdateLogBloc>(
             create: (context) =>
                 ContactUpdateLogBloc(contactsDatabase: contactsDatabase)),

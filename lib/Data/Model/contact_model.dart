@@ -1,14 +1,13 @@
 const String tableContacts = 'contacts';
 
 class ContactFields {
-  static const String id = '_id';
+  static const String id = 'id';
   static const String name = 'name';
   static const String email = 'email';
   static const String phoneNumber = 'phoneNumber';
   static const String isFavourite = 'isFavourite';
   static const String time = 'time';
   static const String updatedTime = 'updatedTime';
-  static const String imageString = 'imageString';
 
   static final List<String> values = [
     id,
@@ -18,7 +17,6 @@ class ContactFields {
     isFavourite,
     time,
     updatedTime,
-    imageString
   ];
 }
 
@@ -30,7 +28,6 @@ class Contact {
   final int isFavourite;
   final DateTime createdTime;
   final DateTime updatedTime;
-  final String imageString;
 
   Contact(
       {this.id,
@@ -39,8 +36,7 @@ class Contact {
       required this.phoneNumber,
       required this.isFavourite,
       required this.createdTime,
-      required this.updatedTime,
-      required this.imageString});
+      required this.updatedTime,});
 
   Contact copy(
           {int? id,
@@ -58,8 +54,7 @@ class Contact {
           phoneNumber: phoneNumber ?? this.phoneNumber,
           isFavourite: isFavourite ?? this.isFavourite,
           createdTime: createdTime ?? this.createdTime,
-          updatedTime: updatedTime ?? this.updatedTime,
-          imageString: imageString ?? this.imageString);
+          updatedTime: updatedTime ?? this.updatedTime);
 
   static Contact fromJson(Map<String, dynamic> json) => Contact(
       id: json[ContactFields.id] as int?,
@@ -68,8 +63,7 @@ class Contact {
       phoneNumber: json[ContactFields.phoneNumber] as String,
       isFavourite: json[ContactFields.isFavourite] as int,
       createdTime: DateTime.parse(json[ContactFields.time] as String),
-      updatedTime: DateTime.parse(json[ContactFields.updatedTime] as String),
-      imageString: json[ContactFields.imageString] as String);
+      updatedTime: DateTime.parse(json[ContactFields.updatedTime] as String));
 
   Map<String, dynamic> toJson() => {
         ContactFields.id: id,
@@ -79,6 +73,5 @@ class Contact {
         ContactFields.isFavourite: isFavourite,
         ContactFields.time: createdTime.toIso8601String(),
         ContactFields.updatedTime: updatedTime.toIso8601String(),
-        ContactFields.imageString: imageString,
       };
 }

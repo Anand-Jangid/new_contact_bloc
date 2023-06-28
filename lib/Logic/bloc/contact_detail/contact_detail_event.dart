@@ -8,16 +8,14 @@ class CancelButtonTapped extends ContactDetailEvent {}
 
 class AddButtonTapped extends ContactDetailEvent {
   final Contact contact;
-  AddButtonTapped({
-    required this.contact,
-  });
+  final List<String>? images;
+  AddButtonTapped({required this.contact, this.images});
 }
 
 class UpdateButtonTapped extends ContactDetailEvent {
   final Contact contact;
-  UpdateButtonTapped({
-    required this.contact,
-  });
+  final List<String>? images;
+  UpdateButtonTapped({required this.contact, this.images});
 }
 
 class DeleteButtonTapped extends ContactDetailEvent {
@@ -54,5 +52,12 @@ class ShowBigImageEvent extends ContactDetailEvent {
   final String imageString;
   ShowBigImageEvent({
     required this.imageString,
+  });
+}
+
+class LoadAllImagesEvent extends ContactDetailEvent {
+  final int id;
+  LoadAllImagesEvent({
+    required this.id,
   });
 }

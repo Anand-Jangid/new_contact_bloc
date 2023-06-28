@@ -23,7 +23,7 @@ class ContactErrorState extends ContactDetailState {
 class ShowModelBottomSheetOfPhoto extends ContactDetailActionState {}
 
 class ImageLoadedState extends ContactDetailState {
-  final String? imageString;
+  final List<String>? imageString;
   ImageLoadedState({
     this.imageString,
   });
@@ -35,3 +35,12 @@ class ShowBigImageState extends ContactDetailActionState {
     required this.imageString,
   });
 }
+
+class AllImagesLoadedState extends ContactDetailState {
+  final List<String> images;
+  AllImagesLoadedState({
+    required this.images,
+  });
+}
+
+class NoImageFoundState extends ContactDetailState{}

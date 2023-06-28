@@ -32,6 +32,8 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
     on<ImageLoadEvent>(imageLoadEvent);
 
     on<ShowBigImageEvent>(showBigImageEvent);
+
+    on<LoadAllImagesEvent>(loadAllImagesEvent);
   }
 
   FutureOr<void> cancelButtonTapped(
@@ -43,7 +45,7 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
       AddButtonTapped event, Emitter<ContactDetailState> emit) async {
     emit(ContactProcessingState());
     try {
-      var contact = await contactsDatabase.create(event.contact);
+      var contact = await contactsDatabase.create(event.contact, event.images);
       //TODO: check the contact is created successfully
       emit(MoveToBackPage());
     } catch (e) {
@@ -55,7 +57,7 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
       UpdateButtonTapped event, Emitter<ContactDetailState> emit) async {
     emit(ContactProcessingState());
     try {
-      var result = await contactsDatabase.update(event.contact);
+      var result = await contactsDatabase.update(event.contact, event.images);
       emit(MoveToBackPage());
     } catch (e) {
       emit(ContactErrorState(error: e.toString()));
@@ -82,18 +84,19 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
   FutureOr<void> cameraImageSelected(
       CameraImageSelected event, Emitter<ContactDetailState> emit) async {
     try {
-      final String? imageString =
+      final List<String>? imagesList =
           await imageDatabase.getImageString(ImageSource.camera);
-      if (imageString != null) {
-        contactsDatabase.update(Contact(
-            id: event.contact.id,
-            name: event.contact.name,
-            email: event.contact.email,
-            phoneNumber: event.contact.phoneNumber,
-            isFavourite: event.contact.isFavourite,
-            createdTime: event.contact.createdTime,
-            updatedTime: event.contact.updatedTime,
-            imageString: imageString));
+      if (imagesList != null) {
+        contactsDatabase.update(
+            Contact(
+                id: event.contact.id,
+                name: event.contact.name,
+                email: event.contact.email,
+                phoneNumber: event.contact.phoneNumber,
+                isFavourite: event.contact.isFavourite,
+                createdTime: event.contact.createdTime,
+                updatedTime: event.contact.updatedTime),
+            imagesList);
 
         emit(MoveToBackPage());
       }
@@ -105,18 +108,20 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
   FutureOr<void> galarayImageSelected(
       GalarayImageSelected event, Emitter<ContactDetailState> emit) async {
     try {
-      final String? imageString =
+      final List<String>? imagesList =
           await imageDatabase.getImageString(ImageSource.gallery);
-      if (imageString != null) {
-        contactsDatabase.update(Contact(
-            id: event.contact.id,
-            name: event.contact.name,
-            email: event.contact.email,
-            phoneNumber: event.contact.phoneNumber,
-            isFavourite: event.contact.isFavourite,
-            createdTime: event.contact.createdTime,
-            updatedTime: event.contact.updatedTime,
-            imageString: imageString));
+      if (imagesList != null) {
+        contactsDatabase.update(
+            Contact(
+              id: event.contact.id,
+              name: event.contact.name,
+              email: event.contact.email,
+              phoneNumber: event.contact.phoneNumber,
+              isFavourite: event.contact.isFavourite,
+              createdTime: event.contact.createdTime,
+              updatedTime: event.contact.updatedTime,
+            ),
+            imagesList);
 
         emit(MoveToBackPage());
       }
@@ -128,9 +133,9 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
   FutureOr<void> imageLoadEvent(
       ImageLoadEvent event, Emitter<ContactDetailState> emit) async {
     try {
-      String? imageString =
+      List<String>? imagesList =
           await imageDatabase.getImageString(event.imageSource);
-      emit(ImageLoadedState(imageString: imageString));
+      emit(ImageLoadedState(imageString: imagesList));
     } on Exception catch (e) {
       emit(ContactErrorState(error: e.toString()));
     }
@@ -139,5 +144,20 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
   FutureOr<void> showBigImageEvent(
       ShowBigImageEvent event, Emitter<ContactDetailState> emit) {
     emit(ShowBigImageState(imageString: event.imageString));
+  }
+
+  FutureOr<void> loadAllImagesEvent(
+      LoadAllImagesEvent event, Emitter<ContactDetailState> emit) async {
+    emit(ContactProcessingState());
+    try {
+      var images = await contactsDatabase.getImagesOfOneRecord(event.id);
+      if (images != null) {
+        emit(AllImagesLoadedState(images: images.images));
+      } else {
+        emit(NoImageFoundState());
+      }
+    } catch (e) {
+      emit(ContactErrorState(error: e.toString()));
+    }
   }
 }

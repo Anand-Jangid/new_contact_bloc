@@ -29,6 +29,7 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
   late int isFavourite;
   File? imagefile;
   String imageString = '';
+  List<String> images = [];
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
@@ -40,21 +41,21 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
         TextEditingController(text: widget.contact?.phoneNumber);
     isFavourite = widget.contact?.isFavourite ?? 0;
     if (widget.contact != null) {
-      imageString = widget.contact!.imageString;
-      if (widget.contact!.imageString != '') {
-        imagefile = File(widget.contact!.imageString);
-      } else if (imageString != '') {
+      if (imageString != '') {
         imagefile = File(imageString);
       }
+      context
+          .read<ContactDetailBloc>()
+          .add(LoadAllImagesEvent(id: widget.contact!.id!));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async{
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => const ContactScreen()));
+      onWillPop: () async {
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const ContactScreen()));
         return false;
       },
       child: Scaffold(
@@ -108,21 +109,6 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                             ),
                             onPressed: () async {
                               Navigator.pop(context);
-                              // context.read<ContactDetailBloc>().add(
-                              //     GalarayImageSelected(
-                              //         contact: Contact(
-                              //             id: widget.contact?.id,
-                              //             imageString: imageString,
-                              //             name: _nameController.text,
-                              //             email: _emailController.text,
-                              //             phoneNumber: _numberController.text,
-                              //             isFavourite: isFavourite,
-                              //             createdTime:
-                              //                 widget.contact?.createdTime ??
-                              //                     DateTime.now(),
-                              //             updatedTime:
-                              //                 widget.contact?.updatedTime ??
-                              //                     DateTime.now())));
                               context.read<ContactDetailBloc>().add(
                                   ImageLoadEvent(
                                       imageSource: ImageSource.gallery));
@@ -140,22 +126,6 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                             ),
                             onPressed: () {
                               Navigator.pop(context);
-                              // context.read<ContactDetailBloc>().add(
-                              //     CameraImageSelected(
-                              //         contact: Contact(
-                              //             id: widget.contact?.id,
-                              //             name: _nameController.text,
-                              //             email: _emailController.text,
-                              //             phoneNumber: _numberController.text,
-                              //             isFavourite: isFavourite,
-                              //             createdTime:
-                              //                 widget.contact?.createdTime ??
-                              //                     DateTime.now(),
-                              //             updatedTime:
-                              //                 widget.contact?.updatedTime ??
-                              //                     DateTime.now(),
-                              //             imageString: ''))
-                              //   );
                               context.read<ContactDetailBloc>().add(
                                   ImageLoadEvent(
                                       imageSource: ImageSource.camera));
@@ -213,25 +183,34 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                       (state.imageString != null)
 
                           ///Image
-                          ? InkWell(
-                              onTap: () {
-                                context.read<ContactDetailBloc>().add(
-                                    ShowBigImageEvent(
-                                        imageString: state.imageString!));
-                              },
-                              child: CircleAvatar(
-                                radius: 100,
-                                child: ClipOval(
-                                    child: Image.file(
-                                  File(
-                                    state.imageString!,
-                                  ),
-                                  width: 200,
-                                  height: 200,
-                                  fit: BoxFit.cover,
-                                )),
-                              ),
-                            )
+                          ? Container(
+                            height: 300,
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: state.imageString!.length,
+                                itemBuilder: ((context, index) {
+                                  return InkWell(
+                                    onTap: () {
+                                      context.read<ContactDetailBloc>().add(
+                                          ShowBigImageEvent(
+                                              imageString:
+                                                  state.imageString![index]));
+                                    },
+                                    child: CircleAvatar(
+                                      radius: 100,
+                                      child: ClipOval(
+                                          child: Image.file(
+                                        File(
+                                          state.imageString![index],
+                                        ),
+                                        width: 200,
+                                        height: 200,
+                                        fit: BoxFit.cover,
+                                      )),
+                                    ),
+                                  );
+                                })),
+                          )
                           : InkWell(
                               onTap: () {
                                 context
@@ -328,19 +307,403 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                 ElevatedButton(
                                     onPressed: () {
                                       context.read<ContactDetailBloc>().add(
-                                          AddButtonTapped(
-                                              contact: Contact(
-                                                  imageString:
-                                                      state.imageString ??
-                                                          imageString,
-                                                  name: _nameController.text,
-                                                  email: _emailController.text,
-                                                  phoneNumber:
-                                                      _numberController.text,
-                                                  isFavourite: isFavourite,
-                                                  createdTime: DateTime.now(),
-                                                  updatedTime:
-                                                      DateTime.now())));
+                                              AddButtonTapped(
+                                                  images: state.imageString,
+                                                  contact: Contact(
+                                                      name:
+                                                          _nameController.text,
+                                                      email:
+                                                          _emailController.text,
+                                                      phoneNumber:
+                                                          _numberController
+                                                              .text,
+                                                      isFavourite: isFavourite,
+                                                      createdTime:
+                                                          DateTime.now(),
+                                                      updatedTime:
+                                                          DateTime.now())));
+                                    },
+                                    child: const Text("ADD")),
+                              ],
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Row(
+                                  children: [
+                                    // Cancel button
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          context
+                                              .read<ContactDetailBloc>()
+                                              .add(CancelButtonTapped());
+                                        },
+                                        child: const Text("Cancel")),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    // Update button
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          context.read<ContactDetailBloc>().add(
+                                                  UpdateButtonTapped(
+                                                      images: state.imageString,
+                                                      contact: Contact(
+                                                          id: widget
+                                                              .contact!.id,
+                                                          name: _nameController
+                                                              .text,
+                                                          email:
+                                                              _emailController
+                                                                  .text,
+                                                          phoneNumber:
+                                                              _numberController
+                                                                  .text,
+                                                          isFavourite:
+                                                              isFavourite,
+                                                          createdTime: widget
+                                                                  .contact
+                                                                  ?.createdTime ??
+                                                              DateTime.now(),
+                                                          updatedTime:
+                                                              DateTime.now())));
+                                        },
+                                        child: const Text("Update")),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    // Delete button
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          context.read<ContactDetailBloc>().add(
+                                              DeleteButtonTapped(
+                                                  id: widget.contact!.id!));
+                                        },
+                                        child: const Text("Delete")),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ContactUpdateLog(
+                                                      id: widget
+                                                          .contact!.id!)));
+                                    },
+                                    child: const Text("Update Log")),
+                              ],
+                            )
+                    ],
+                  ),
+                ),
+              );
+            } else if (state is AllImagesLoadedState) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // // (imagefile != null)
+                      //     ? CircleAvatar(
+                      //         radius: 60,
+                      //         child: Image.file(imagefile!),
+                      //       )
+                      //     : InkWell(
+                      //         onTap: () {
+                      //           context
+                      //               .read<ContactDetailBloc>()
+                      //               .add(ImageIconTapped());
+                      //         },
+                      //         child: const CircleAvatar(
+                      //           radius: 60,
+                      //           child: Icon(
+                      //             Icons.person,
+                      //             size: 110,
+                      //           ),
+                      //         ),
+                      //       ),
+                      Visibility(
+                          visible: (state.images != null),
+                          child: Container(
+                            height: 300,
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: state.images.length,
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                    onTap: () {
+                                      context.read<ContactDetailBloc>().add(
+                                          ShowBigImageEvent(
+                                              imageString:
+                                                  state.images[index]));
+                                    },
+                                    child: CircleAvatar(
+                                      radius: 100,
+                                      child: ClipOval(
+                                          child: Image.file(
+                                        File(
+                                          state.images[index],
+                                        ),
+                                        width: 200,
+                                        height: 200,
+                                        fit: BoxFit.cover,
+                                      )),
+                                    ),
+                                  );
+                                }),
+                          )),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      TextFormField(
+                        controller: _nameController,
+                        keyboardType: TextInputType.name,
+                        decoration: InputDecoration(
+                            label: const Text('Name'),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15))),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                            label: const Text('Email'),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15))),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextFormField(
+                        controller: _numberController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            label: const Text('Phone Number'),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15))),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      CheckboxListTile(
+                          title: const Text('Is Favourite'),
+                          value: (isFavourite == 1) ? true : false,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              (value!) ? (isFavourite = 1) : (isFavourite = 0);
+                            });
+                          }),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              // Cancel button
+                              ElevatedButton(
+                                  onPressed: () {
+                                    context
+                                        .read<ContactDetailBloc>()
+                                        .add(CancelButtonTapped());
+                                  },
+                                  child: const Text("Cancel")),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              // Update button
+                              ElevatedButton(
+                                  onPressed: () {
+                                    context.read<ContactDetailBloc>().add(
+                                        UpdateButtonTapped(
+                                            images:
+                                                state.images ?? [imageString],
+                                            contact: Contact(
+                                                id: widget.contact!.id,
+                                                name: _nameController.text,
+                                                email: _emailController.text,
+                                                phoneNumber:
+                                                    _numberController.text,
+                                                isFavourite: isFavourite,
+                                                createdTime: widget
+                                                        .contact?.createdTime ??
+                                                    DateTime.now(),
+                                                updatedTime: DateTime.now())));
+                                  },
+                                  child: const Text("Update")),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              // Delete button
+                              ElevatedButton(
+                                  onPressed: () {
+                                    context.read<ContactDetailBloc>().add(
+                                        DeleteButtonTapped(
+                                            id: widget.contact!.id!));
+                                  },
+                                  child: const Text("Delete")),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => ContactUpdateLog(
+                                        id: widget.contact!.id!)));
+                              },
+                              child: const Text("Update Log")),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              );
+            } else if (state is NoImageFoundState) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      (imagefile != null)
+                          ? InkWell(
+                              onTap: () {
+                                context.read<ContactDetailBloc>().add(
+                                    ShowBigImageEvent(
+                                        imageString: imageString));
+                              },
+                              child: CircleAvatar(
+                                  radius: 100,
+                                  // backgroundImage: FileImage(imagefile!),
+                                  child: ClipOval(
+                                    child: Image.file(
+                                      File(imageString),
+                                      width: 200,
+                                      height: 200,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )),
+                            )
+                          : InkWell(
+                              onTap: () {
+                                context
+                                    .read<ContactDetailBloc>()
+                                    .add(ImageIconTapped());
+                              },
+                              child: const CircleAvatar(
+                                radius: 60,
+                                child: Icon(
+                                  Icons.person,
+                                  size: 110,
+                                ),
+                              ),
+                            ),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      TextFormField(
+                        controller: _nameController,
+                        keyboardType: TextInputType.name,
+                        decoration: InputDecoration(
+                            label: const Text('Name'),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15))),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                            label: const Text('Email'),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15))),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextFormField(
+                        controller: _numberController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            label: const Text('Phone Number'),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15))),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      CheckboxListTile(
+                          title: const Text('Is Favourite'),
+                          value: (isFavourite == 1) ? true : false,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              (value!) ? (isFavourite = 1) : (isFavourite = 0);
+                            });
+                          }),
+                      (widget.contact == null)
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // Cancel button
+                                ElevatedButton(
+                                    onPressed: () {
+                                      context
+                                          .read<ContactDetailBloc>()
+                                          .add(CancelButtonTapped());
+                                    },
+                                    child: const Text("Cancel")),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                // Add button
+                                ElevatedButton(
+                                    onPressed: () {
+                                      (imageString == '')
+                                          ? context
+                                              .read<ContactDetailBloc>()
+                                              .add(AddButtonTapped(
+                                                  contact: Contact(
+                                                      name:
+                                                          _nameController.text,
+                                                      email:
+                                                          _emailController.text,
+                                                      phoneNumber:
+                                                          _numberController
+                                                              .text,
+                                                      isFavourite: isFavourite,
+                                                      createdTime:
+                                                          DateTime.now(),
+                                                      updatedTime:
+                                                          DateTime.now())))
+                                          : context
+                                              .read<ContactDetailBloc>()
+                                              .add(AddButtonTapped(
+                                                  images: [imageString],
+                                                  contact: Contact(
+                                                      name:
+                                                          _nameController.text,
+                                                      email:
+                                                          _emailController.text,
+                                                      phoneNumber:
+                                                          _numberController
+                                                              .text,
+                                                      isFavourite: isFavourite,
+                                                      createdTime:
+                                                          DateTime.now(),
+                                                      updatedTime:
+                                                          DateTime.now())));
                                     },
                                     child: const Text("ADD")),
                               ],
@@ -366,10 +729,8 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                         onPressed: () {
                                           context.read<ContactDetailBloc>().add(
                                               UpdateButtonTapped(
+                                                  images: [imageString],
                                                   contact: Contact(
-                                                      imageString:
-                                                          state.imageString ??
-                                                              imageString,
                                                       id: widget.contact!.id,
                                                       name:
                                                           _nameController.text,
@@ -522,18 +883,40 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                 // Add button
                                 ElevatedButton(
                                     onPressed: () {
-                                      context.read<ContactDetailBloc>().add(
-                                          AddButtonTapped(
-                                              contact: Contact(
-                                                  imageString: imageString,
-                                                  name: _nameController.text,
-                                                  email: _emailController.text,
-                                                  phoneNumber:
-                                                      _numberController.text,
-                                                  isFavourite: isFavourite,
-                                                  createdTime: DateTime.now(),
-                                                  updatedTime:
-                                                      DateTime.now())));
+                                      (imageString == '')
+                                          ? context
+                                              .read<ContactDetailBloc>()
+                                              .add(AddButtonTapped(
+                                                  contact: Contact(
+                                                      name:
+                                                          _nameController.text,
+                                                      email:
+                                                          _emailController.text,
+                                                      phoneNumber:
+                                                          _numberController
+                                                              .text,
+                                                      isFavourite: isFavourite,
+                                                      createdTime:
+                                                          DateTime.now(),
+                                                      updatedTime:
+                                                          DateTime.now())))
+                                          : context
+                                              .read<ContactDetailBloc>()
+                                              .add(AddButtonTapped(
+                                                  images: [imageString],
+                                                  contact: Contact(
+                                                      name:
+                                                          _nameController.text,
+                                                      email:
+                                                          _emailController.text,
+                                                      phoneNumber:
+                                                          _numberController
+                                                              .text,
+                                                      isFavourite: isFavourite,
+                                                      createdTime:
+                                                          DateTime.now(),
+                                                      updatedTime:
+                                                          DateTime.now())));
                                     },
                                     child: const Text("ADD")),
                               ],
@@ -559,8 +942,8 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                         onPressed: () {
                                           context.read<ContactDetailBloc>().add(
                                               UpdateButtonTapped(
+                                                  images: [imageString],
                                                   contact: Contact(
-                                                      imageString: imageString,
                                                       id: widget.contact!.id,
                                                       name:
                                                           _nameController.text,
@@ -624,26 +1007,4 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
     _emailController.dispose();
     _numberController.dispose();
   }
-
-  // Future<void> getImageString(ImageSource imageSource) async {
-  //   final File? pickedImage = await pickImage(imageSource);
-  //   if (pickedImage != null) {
-  //     final String fileName = basename(pickedImage.path);
-  //     final Directory appDir = await getApplicationDocumentsDirectory();
-  //     final String imagePath = '${appDir.path}/$fileName';
-  //     imageString = imagePath;
-  //   }
-  //   return null;
-  // }
-
-  // Future<File?> pickImage(ImageSource imageSource) async {
-  //   final picker = ImagePicker();
-  //   final pickedFile = await picker.pickImage(source: imageSource);
-
-  //   if (pickedFile != null) {
-  //     return File(pickedFile.path);
-  //   }
-
-  //   return null;
-  // }
 }

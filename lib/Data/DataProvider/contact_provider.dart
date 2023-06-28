@@ -3,6 +3,7 @@ import 'package:new_contact_bloc/Data/Model/contact_model_hive.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import '../Model/contact_model.dart';
+import '../Model/image_model_hive.dart';
 
 class ContactsDatabase {
   static final ContactsDatabase instance = ContactsDatabase._init();
@@ -12,10 +13,14 @@ class ContactsDatabase {
   ContactsDatabase._init();
 
   late Box<ContactModelHive> contactsBox;
+  late Box<ImageModelHive> imagesBox;
 
   Future<Database> get database async {
     await Hive.openBox<ContactModelHive>("contactInHive");
     contactsBox = Hive.box<ContactModelHive>("contactInHive");
+
+    await Hive.openBox<ImageModelHive>("imagesInHive");
+    imagesBox = Hive.box<ImageModelHive>("imagesInHive");
     if (_database != null) return _database!;
     _database = await _initDB('contacts.db');
     return _database!;
@@ -41,16 +46,15 @@ class ContactsDatabase {
         ${ContactFields.phoneNumber} $textType,
         ${ContactFields.isFavourite} $boolType,
         ${ContactFields.time} $textType,
-        ${ContactFields.updatedTime} $textType,
-        ${ContactFields.imageString} TEXT
+        ${ContactFields.updatedTime} $textType
         )
       ''');
   }
 
-  Future<Contact> create(Contact contact) async {
+  Future<Contact> create(Contact contact, List<String>? images) async {
     final db = await instance.database;
     final id = await db.insert(tableContacts, contact.toJson());
-    //now with this is i can store in hive also
+    //Storing contact log in hive
     await contactsBox.put(
         id.toString(),
         ContactModelHive(
@@ -60,6 +64,11 @@ class ContactsDatabase {
             isFavourite: [contact.isFavourite],
             createdTime: [contact.createdTime],
             updatedTime: [contact.updatedTime]));
+    //Storing images list in hive
+    if (images != null && images.isNotEmpty) {
+      await imagesBox.put(
+          id.toString(), ImageModelHive(contactId: id, images: images));
+    }
     return contact.copy(id: id);
   }
 
@@ -90,7 +99,15 @@ class ContactsDatabase {
     return contacts!;
   }
 
-  Future<int> update(Contact contact) async {
+  Future<ImageModelHive?> getImagesOfOneRecord(int id) async {
+    var images = imagesBox.get(id.toString());
+    if (images != null) {
+      return images;
+    }
+    return null;
+  }
+
+  Future<int> update(Contact contact, List<String>? imagesFromUser) async {
     if (contactsBox.containsKey(contact.id.toString())) {
       var getContacts = contactsBox.get(contact.id.toString());
       List<String> nameList = getContacts!.name;
@@ -124,6 +141,35 @@ class ContactsDatabase {
               createdTime: [contact.createdTime],
               updatedTime: [contact.updatedTime]));
     }
+
+    ///Update image record in Hive
+    if (imagesBox.containsKey(contact.id.toString())) {
+      var getImagesModel = imagesBox.get(contact.id.toString());
+      if (getImagesModel != null) {
+        var imagesFromHive = getImagesModel.images;
+        if (imagesFromHive != null && imagesFromUser != null) {
+          imagesFromHive.addAll(imagesFromUser);
+        }
+        //! Update hive record
+      }
+      // List<String> images = getImages.images;
+      // images.addA(contact.imageString);
+      // // var newContact = ContactModelHive(
+      // //     name: nameList,
+      // //     email: emailList,
+      // //     phoneNumber: phoneNumberList,
+      // //     isFavourite: isFavouriteList,
+      // //     createdTime: createdDateList,
+      // //     updatedTime: updatedDateList);
+      // var newImage = ImageModelHive(
+      //   contactId: contact.id!, images: [contact.imageString])
+      // await contactsBox.put(contact.id.toString(), newContact);
+    } else {
+      if (imagesFromUser != null) {
+        await imagesBox.put(contact.id.toString(),
+            ImageModelHive(contactId: contact.id!, images: imagesFromUser));
+      }
+    }
     final db = await instance.database;
     return db.update(
       tableContacts,
@@ -137,6 +183,9 @@ class ContactsDatabase {
     //first deleting from hive its change log
     contactsBox.delete(id.toString());
 
+    /// we also need to delete images in hive
+    imagesBox.delete(id.toString());
+    
     final db = await instance.database;
 
     return await db.delete(
