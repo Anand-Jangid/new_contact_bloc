@@ -1,14 +1,17 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../Data/Model/contact_model.dart';
 import '../../Logic/bloc/contact/contact_bloc.dart';
 import '../Widget/contact_list.dart';
+import '../Widget/custom_search_delegate.dart';
 
 class ContactListPage extends StatefulWidget {
   final List<Contact> contacts;
   final int bottmNavLocation;
-  const ContactListPage({super.key, required this.bottmNavLocation, required this.contacts});
+  const ContactListPage(
+      {super.key, required this.bottmNavLocation, required this.contacts});
 
   @override
   State<ContactListPage> createState() => _ContactListPageState();
@@ -23,6 +26,16 @@ class _ContactListPageState extends State<ContactListPage> {
               ? const Text("All Contacts")
               : const Text("Favourite Contacts"),
           centerTitle: true,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  showSearch(
+                      context: context,
+                      delegate:
+                          CustomSearchDelegate(contacts: widget.contacts));
+                },
+                icon: Icon(Icons.search_rounded))
+          ],
         ),
         body: ContactList(contacts: widget.contacts ?? []),
         floatingActionButton: FloatingActionButton(
