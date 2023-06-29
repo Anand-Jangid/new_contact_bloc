@@ -3,6 +3,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:new_contact_bloc/Data/DataProvider/contact_provider.dart';
 import 'package:new_contact_bloc/Data/DataProvider/image_provider.dart';
 import 'package:new_contact_bloc/Logic/bloc/contact_detail/contact_detail_bloc.dart';
+import 'package:new_contact_bloc/Logic/utility/app_bloc_observer.dart';
 import 'package:path_provider/path_provider.dart';
 import 'Data/Model/contact_model_hive.dart';
 import 'Data/Model/image_model_hive.dart';
@@ -17,6 +18,8 @@ void main() async {
   Hive.init(hiveDocument.path);
   Hive.registerAdapter(ContactModelHiveAdapter());
   Hive.registerAdapter(ImageModelHiveAdapter());
+
+  Bloc.observer = AppBlocObserver();
   runApp(MyApp());
 }
 

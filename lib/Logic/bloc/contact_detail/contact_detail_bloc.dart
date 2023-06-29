@@ -160,4 +160,25 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
       emit(ContactErrorState(error: e.toString()));
     }
   }
+
+  // //This method is called before new state is dispatched
+  // @override
+  // void onChange(Change<ContactDetailState> change) {
+  //   print(change);
+  //   super.onChange(change);
+  // }
+
+  // //
+  // @override
+  // void onEvent(ContactDetailEvent event) {
+  //   print(event);
+  //   super.onEvent(event);
+  // }
+
+  // @override
+  // void onTransition(
+  //     Transition<ContactDetailEvent, ContactDetailState> transition) {
+  //   print(transition);
+  //   super.onTransition(transition);
+  // }
 }
