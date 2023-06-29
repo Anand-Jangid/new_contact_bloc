@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:new_contact_bloc/Data/Model/contact_model.dart';
 import 'package:new_contact_bloc/View/Screens/contact_screen.dart';
 import 'package:new_contact_bloc/View/Screens/contact_update_log.dart';
+import 'package:new_contact_bloc/View/Screens/image_view_screen.dart';
 import '../../Logic/bloc/contact_detail/contact_detail_bloc.dart';
 
 class AddNewContactScreen extends StatefulWidget {
@@ -164,6 +165,12 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                       ],
                     );
                   }));
+            } else if (state is FullScreenImageState) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ImageViewScreen(images: state.images)));
             }
           },
           builder: (context, state) {
@@ -422,34 +429,57 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                       //       ),
                       Visibility(
                           visible: (state.images != null),
-                          child: Container(
-                            height: 300,
-                            child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: state.images.length,
-                                itemBuilder: (context, index) {
-                                  return InkWell(
+                          child: InkWell(
                                     onTap: () {
                                       context.read<ContactDetailBloc>().add(
-                                          ShowBigImageEvent(
-                                              imageString:
-                                                  state.images[index]));
+                                          FullScreenImagesEvent(
+                                              images: state.images));
                                     },
                                     child: CircleAvatar(
                                       radius: 100,
                                       child: ClipOval(
                                           child: Image.file(
                                         File(
-                                          state.images[index],
+                                          state.images.first,
                                         ),
                                         width: 200,
                                         height: 200,
                                         fit: BoxFit.cover,
                                       )),
                                     ),
-                                  );
-                                }),
-                          )),
+                                  )
+                          // child: Container(
+                          //   height: 300,
+                          //   child: ListView.builder(
+                          //       scrollDirection: Axis.horizontal,
+                          //       itemCount: state.images.length,
+                          //       itemBuilder: (context, index) {
+                          //         return InkWell(
+                          //           onTap: () {
+                          //             // context.read<ContactDetailBloc>().add(
+                          //             //     ShowBigImageEvent(
+                          //             //         imageString:
+                          //             //             state.images[index]));
+                          //             context.read<ContactDetailBloc>().add(
+                          //                 FullScreenImagesEvent(
+                          //                     images: state.images));
+                          //           },
+                          //           child: CircleAvatar(
+                          //             radius: 100,
+                          //             child: ClipOval(
+                          //                 child: Image.file(
+                          //               File(
+                          //                 state.images[index],
+                          //               ),
+                          //               width: 200,
+                          //               height: 200,
+                          //               fit: BoxFit.cover,
+                          //             )),
+                          //           ),
+                          //         );
+                          //       }),
+                          // )
+                      ),
                       const SizedBox(
                         height: 40,
                       ),
@@ -515,8 +545,7 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                                   onPressed: () {
                                     context.read<ContactDetailBloc>().add(
                                         UpdateButtonTapped(
-                                            images:
-                                                state.images,
+                                            images: state.images,
                                             contact: Contact(
                                                 id: widget.contact!.id,
                                                 name: _nameController.text,
@@ -738,19 +767,19 @@ class _AddNewContactScreenState extends State<AddNewContactScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       InkWell(
-                              onTap: () {
-                                context
-                                    .read<ContactDetailBloc>()
-                                    .add(ImageIconTapped());
-                              },
-                              child: const CircleAvatar(
-                                radius: 60,
-                                child: Icon(
-                                  Icons.person,
-                                  size: 110,
-                                ),
-                              ),
-                            ),
+                        onTap: () {
+                          context
+                              .read<ContactDetailBloc>()
+                              .add(ImageIconTapped());
+                        },
+                        child: const CircleAvatar(
+                          radius: 60,
+                          child: Icon(
+                            Icons.person,
+                            size: 110,
+                          ),
+                        ),
+                      ),
                       const SizedBox(
                         height: 40,
                       ),

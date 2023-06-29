@@ -61,3 +61,10 @@ class LoadAllImagesEvent extends ContactDetailEvent {
     required this.id,
   });
 }
+
+class FullScreenImagesEvent extends ContactDetailEvent {
+  final List<String> images;
+  FullScreenImagesEvent({
+    required this.images,
+  });
+}

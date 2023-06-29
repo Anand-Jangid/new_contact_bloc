@@ -46,4 +46,11 @@ class AllImagesLoadedState extends ContactDetailState {
 }
 
 //No image found in previously created record
-class NoImageFoundState extends ContactDetailState{}
+class NoImageFoundState extends ContactDetailState {}
+
+class FullScreenImageState extends ContactDetailActionState {
+  final List<String> images;
+  FullScreenImageState({
+    required this.images,
+  });
+}

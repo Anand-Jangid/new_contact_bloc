@@ -34,6 +34,8 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
     on<ShowBigImageEvent>(showBigImageEvent);
 
     on<LoadAllImagesEvent>(loadAllImagesEvent);
+
+    on<FullScreenImagesEvent>(fullScreenImagesEvent);
   }
 
   FutureOr<void> cancelButtonTapped(
@@ -181,4 +183,9 @@ class ContactDetailBloc extends Bloc<ContactDetailEvent, ContactDetailState> {
   //   print(transition);
   //   super.onTransition(transition);
   // }
+
+  FutureOr<void> fullScreenImagesEvent(
+      FullScreenImagesEvent event, Emitter<ContactDetailState> emit) {
+    emit(FullScreenImageState(images: event.images));
+  }
 }
