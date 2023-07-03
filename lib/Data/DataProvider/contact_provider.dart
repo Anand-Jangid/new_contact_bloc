@@ -185,7 +185,7 @@ class ContactsDatabase {
 
     /// we also need to delete images in hive
     imagesBox.delete(id.toString());
-    
+
     final db = await instance.database;
 
     return await db.delete(
@@ -198,6 +198,7 @@ class ContactsDatabase {
   Future close() async {
     //closing box
     await contactsBox.close();
+    await imagesBox.close();
     final db = await instance.database;
     db.close();
   }

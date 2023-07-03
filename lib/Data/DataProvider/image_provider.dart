@@ -20,8 +20,8 @@ class ImageDatabase {
         // pickedImagesFromGallary.map((imageFile) {
         //   imagePaths.add(imageFile.path);
         // });
-        for (int i = 0; i < pickedImagesFromGallary.length; i++) {
-          imagePaths.add(pickedImagesFromGallary[i].path);
+        for (var pickedImage in pickedImagesFromGallary) {
+          imagePaths.add(pickedImage.path);
         }
         return imagePaths;
       }
@@ -43,8 +43,8 @@ class ImageDatabase {
     final pickedImages = await picker.pickMultiImage();
     List<File> pickedImagesFile = [];
     if (pickedImages != null) {
-      for (int i = 0; i < pickedImages.length; i++) {
-        pickedImagesFile.add(File(pickedImages[i].path));
+      for (var pickedImage in pickedImages) {
+        pickedImagesFile.add(File(pickedImage.path));
       }
       return pickedImagesFile;
     }
