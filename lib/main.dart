@@ -12,6 +12,8 @@ import 'Logic/bloc/contact_update_log/contact_update_log_bloc.dart';
 import 'View/Screens/contact_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+
+//Change 1
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final hiveDocument = await getApplicationDocumentsDirectory();
